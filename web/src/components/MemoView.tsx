@@ -13,7 +13,6 @@ import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
 import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
 import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
 import { useTranslate } from "@/utils/i18n";
-import { convertVisibilityToString } from "@/utils/memo";
 import { isSuperUser } from "@/utils/user";
 import MemoActionMenu from "./MemoActionMenu";
 import MemoContent from "./MemoContent";
@@ -174,13 +173,18 @@ const MemoView: React.FC<Props> = (props: Props) => {
                     <UserAvatar className="mr-2 shrink-0" avatarUrl={creator.avatarUrl} />
                   </Link>
                   <div className="w-full flex flex-col justify-center items-start">
-                    <Link
-                      className="w-full block leading-tight hover:opacity-80 truncate text-gray-600 dark:text-gray-400"
-                      to={`/u/${encodeURIComponent(creator.username)}`}
-                      viewTransition
-                    >
-                      {creator.nickname || creator.username}
-                    </Link>
+                    <div className="flex">
+                      <Link
+                        className="w-full block leading-tight hover:opacity-80 truncate text-gray-600 dark:text-gray-400"
+                        to={`/u/${encodeURIComponent(creator.username)}`}
+                        viewTransition
+                      >
+                        {creator.nickname || creator.username}
+                      </Link>
+                      {memo.visibility !== Visibility.PUBLIC && (
+                        <VisibilityIcon visibility={memo.visibility} className="ml-1 w-4 h-auto text-gray-600 dark:text-gray-400" />
+                      )}
+                    </div>
                     <div
                       className="w-auto -mt-0.5 text-xs leading-tight text-gray-400 dark:text-gray-500 select-none"
                       onClick={handleGotoMemoDetailPage}
@@ -191,22 +195,18 @@ const MemoView: React.FC<Props> = (props: Props) => {
                 </div>
               ) : (
                 <div
-                  className="w-full text-sm leading-tight text-gray-400 dark:text-gray-500 select-none"
+                  className="w-full flex text-sm leading-tight text-gray-400 dark:text-gray-500 select-none"
                   onClick={handleGotoMemoDetailPage}
                 >
                   {displayTime}
+                  {props.showVisibility && memo.visibility !== Visibility.PUBLIC && (
+                    <VisibilityIcon className="ml-2 w-3 h-auto text-gray-400 dark:text-gray-500" visibility={memo.visibility} />
+                  )}
                 </div>
               )}
             </div>
             <div className="flex flex-row justify-end items-center select-none shrink-0 gap-2">
               <div className="w-auto invisible group-hover:visible flex flex-row justify-between items-center gap-2">
-                {props.showVisibility && memo.visibility !== Visibility.PRIVATE && (
-                  <Tooltip title={t(`memo.visibility.${convertVisibilityToString(memo.visibility).toLowerCase()}` as any)} placement="top">
-                    <span className="flex justify-center items-center hover:opacity-70">
-                      <VisibilityIcon visibility={memo.visibility} />
-                    </span>
-                  </Tooltip>
-                )}
                 {currentUser && <ReactionSelector className="border-none w-auto h-auto" memo={memo} />}
               </div>
               {!isInMemoDetailPage && (workspaceMemoRelatedSetting.enableComment || commentAmount > 0) && (
