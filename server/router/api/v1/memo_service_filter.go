@@ -23,6 +23,8 @@ func (s *APIV1Service) buildMemoFindWithFilter(ctx context.Context, find *store.
 		}
 		if len(filter.ContentSearch) > 0 {
 			find.ContentSearch = filter.ContentSearch
+			// 在搜索时不排除评论
+			find.ExcludeComments = false
 		}
 		if len(filter.Visibilities) > 0 {
 			find.VisibilityList = filter.Visibilities
