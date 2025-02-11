@@ -24,14 +24,6 @@ jobs:
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
 
-      - name: Use Latest Corepack
-        run: |
-          echo "Before: corepack version => $(corepack --version || echo 'not installed')"
-          npm install -g corepack@latest
-          echo "After : corepack version => $(corepack --version)"
-          corepack enable
-          pnpm --version
-
       - name: Extract build args
         # Extract version from tag name or manual input
         run: |
@@ -66,6 +58,14 @@ jobs:
             latest=true
           labels: |
             org.opencontainers.image.version=${{ env.VERSION }}
+
+      - name: Use Latest Corepack
+        run: |
+          echo "Before: corepack version => $(corepack --version || echo 'not installed')"
+          npm install -g corepack@latest
+          echo "After : corepack version => $(corepack --version)"
+          corepack enable
+          pnpm --version
 
       - name: Build and Push
         id: docker_build

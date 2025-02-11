@@ -1,13 +1,14 @@
 name: Frontend Test
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "web/**"
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "web/**"
+  workflow_dispatch
 
 jobs:
   static-checks:

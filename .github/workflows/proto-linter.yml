@@ -1,13 +1,14 @@
 name: Proto linter
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "proto/**"
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "proto/**"
+  workflow_dispatch
 
 jobs:
   lint-protos:

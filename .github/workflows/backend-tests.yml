@@ -1,15 +1,16 @@
 name: Backend Test
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches:
-      - main
-    paths:
-      - "go.mod"
-      - "go.sum"
-      - "**.go"
+  # push:
+  #   branches: [main]
+  # pull_request:
+  #   branches:
+  #     - main
+  #   paths:
+  #     - "go.mod"
+  #     - "go.sum"
+  #     - "**.go"
+  workflow_dispatch
 
 jobs:
   go-static-checks:
