@@ -1,8 +1,13 @@
-import { uniqueId } from "lodash-es";
-import { create } from "zustand";
-import { combine } from "zustand/middleware";
-import { memoServiceClient } from "@/grpcweb";
-import { CreateMemoRequest, ListMemosRequest, Memo, MemoView } from "@/types/proto/api/v1/memo_service";
+import { memoServiceClient } from '@/grpcweb';
+import {
+  type CreateMemoRequest,
+  type ListMemosRequest,
+  type Memo,
+  MemoView,
+} from '@/types/proto/api/v1/memo_service';
+import { uniqueId } from 'lodash-es';
+import { create } from 'zustand';
+import { combine } from 'zustand/middleware';
 
 interface State {
   // stateId is used to identify the store instance state.
@@ -32,7 +37,10 @@ export const useMemoStore = create(
       set({ stateId: uniqueId(), memoMapByName: memoMap });
       return { memos, nextPageToken };
     },
-    getOrFetchMemoByName: async (name: string, options?: { skipCache?: boolean; skipStore?: boolean }) => {
+    getOrFetchMemoByName: async (
+      name: string,
+      options?: { skipCache?: boolean; skipStore?: boolean }
+    ) => {
       const memoMap = get().memoMapByName;
       const memoCache = memoMap[name];
       if (memoCache && !options?.skipCache) {
@@ -91,7 +99,7 @@ export const useMemoStore = create(
       delete memoMap[name];
       set({ stateId: uniqueId(), memoMapByName: memoMap });
     },
-  })),
+  }))
 );
 
 export const useMemoList = () => {

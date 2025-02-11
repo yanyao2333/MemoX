@@ -1,4 +1,4 @@
-import { createElement } from "react";
+import { createElement } from 'react';
 
 interface Props {
   tagName: string;

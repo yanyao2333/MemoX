@@ -1,12 +1,18 @@
-import { DivIcon, LatLng } from "leaflet";
-import { MapPinIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import ReactDOMServer from "react-dom/server";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
+import { DivIcon, LatLng } from 'leaflet';
+import { MapPinIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import ReactDOMServer from 'react-dom/server';
+import { MapContainer, Marker, TileLayer, useMapEvents } from 'react-leaflet';
 
 const markerIcon = new DivIcon({
-  className: "relative border-none",
-  html: ReactDOMServer.renderToString(<MapPinIcon className="absolute bottom-1/2 -left-1/2" fill="pink" size={24} />),
+  className: 'relative border-none',
+  html: ReactDOMServer.renderToString(
+    <MapPinIcon
+      className="-left-1/2 absolute bottom-1/2"
+      fill="pink"
+      size={24}
+    />
+  ),
 });
 
 interface MarkerProps {
@@ -33,11 +39,13 @@ const LocationMarker = (props: MarkerProps) => {
   });
 
   useEffect(() => {
-    map.attributionControl.setPrefix("");
+    map.attributionControl.setPrefix('');
     map.locate();
   }, []);
 
-  return position === undefined ? null : <Marker position={position} icon={markerIcon}></Marker>;
+  return position === undefined ? null : (
+    <Marker position={position} icon={markerIcon} />
+  );
 };
 
 interface MapProps {
@@ -51,9 +59,18 @@ const DEFAULT_CENTER_LAT_LNG = new LatLng(48.8584, 2.2945);
 const LeafletMap = (props: MapProps) => {
   const position = props.latlng || DEFAULT_CENTER_LAT_LNG;
   return (
-    <MapContainer className="w-full h-72" center={position} zoom={13} scrollWheelZoom={false}>
+    <MapContainer
+      className="h-72 w-full"
+      center={position}
+      zoom={13}
+      scrollWheelZoom={false}
+    >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <LocationMarker position={position} readonly={props.readonly} onChange={props.onChange ? props.onChange : () => {}} />
+      <LocationMarker
+        position={position}
+        readonly={props.readonly}
+        onChange={props.onChange ? props.onChange : () => {}}
+      />
     </MapContainer>
   );
 };

@@ -1,8 +1,8 @@
-import { useEffect } from "react";
-import useLoading from "@/hooks/useLoading";
-import useNavigateTo from "@/hooks/useNavigateTo";
-import { useMemoStore } from "@/store/v1";
-import Error from "./Error";
+import useLoading from '@/hooks/useLoading';
+import useNavigateTo from '@/hooks/useNavigateTo';
+import { useMemoStore } from '@/store/v1';
+import { useEffect } from 'react';
+import Error from './Error';
 
 interface Props {
   resourceId: string;
@@ -27,8 +27,12 @@ const ReferencedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
     return <Error message={`Memo not found: ${uid}`} />;
   }
 
-  const paramsText = params.has("text") ? params.get("text") : undefined;
-  const displayContent = paramsText || (memo.snippet.length > 12 ? `${memo.snippet.slice(0, 12)}...` : memo.snippet);
+  const paramsText = params.has('text') ? params.get('text') : undefined;
+  const displayContent =
+    paramsText ||
+    (memo.snippet.length > 12
+      ? `${memo.snippet.slice(0, 12)}...`
+      : memo.snippet);
 
   const handleGotoMemoDetailPage = () => {
     navigateTo(`/m/${memo.uid}`);
@@ -36,7 +40,7 @@ const ReferencedMemo = ({ resourceId: uid, params: paramsStr }: Props) => {
 
   return (
     <span
-      className="text-blue-600 whitespace-nowrap dark:text-blue-400 cursor-pointer underline break-all hover:opacity-80 decoration-1"
+      className="cursor-pointer whitespace-nowrap break-all text-blue-600 underline decoration-1 hover:opacity-80 dark:text-blue-400"
       onClick={handleGotoMemoDetailPage}
     >
       {displayContent}

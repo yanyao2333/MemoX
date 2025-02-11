@@ -1,10 +1,10 @@
-import { Button } from "@usememos/mui";
-import { PaperclipIcon } from "lucide-react";
-import { useContext, useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { useResourceStore } from "@/store/v1";
-import { Resource } from "@/types/proto/api/v1/resource_service";
-import { MemoEditorContext } from "../types";
+import { useResourceStore } from '@/store/v1';
+import { Resource } from '@/types/proto/api/v1/resource_service';
+import { Button } from '@usememos/mui';
+import { PaperclipIcon } from 'lucide-react';
+import { useContext, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import { MemoEditorContext } from '../types';
 
 interface State {
   uploadingFlag: boolean;
@@ -19,7 +19,11 @@ const UploadResourceButton = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileInputChange = async () => {
-    if (!fileInputRef.current || !fileInputRef.current.files || fileInputRef.current.files.length === 0) {
+    if (
+      !fileInputRef.current ||
+      !fileInputRef.current.files ||
+      fileInputRef.current.files.length === 0
+    ) {
       return;
     }
     if (state.uploadingFlag) {
@@ -52,7 +56,6 @@ const UploadResourceButton = () => {
         createdResourceList.push(resource);
       }
     } catch (error: any) {
-      console.error(error);
       toast.error(error.details);
     }
 
@@ -66,10 +69,15 @@ const UploadResourceButton = () => {
   };
 
   return (
-    <Button className="relative" size="sm" variant="plain" disabled={state.uploadingFlag}>
-      <PaperclipIcon className="w-5 h-5 mx-auto" />
+    <Button
+      className="relative"
+      size="sm"
+      variant="plain"
+      disabled={state.uploadingFlag}
+    >
+      <PaperclipIcon className="mx-auto h-5 w-5" />
       <input
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
         ref={fileInputRef}
         disabled={state.uploadingFlag}
         onChange={handleFileInputChange}

@@ -1,11 +1,10 @@
-import react from "@vitejs/plugin-react";
-import { codeInspectorPlugin } from "code-inspector-plugin";
-import { resolve } from "path";
-import { defineConfig } from "vite";
+import { resolve } from 'node:path';
+import react from '@vitejs/plugin-react';
+import { codeInspectorPlugin } from 'code-inspector-plugin';
+import { defineConfig } from 'vite';
 
-let devProxyServer = "http://localhost:8081";
+let devProxyServer = 'http://localhost:8081';
 if (process.env.DEV_PROXY_SERVER && process.env.DEV_PROXY_SERVER.length > 0) {
-  console.log("Use devProxyServer from environment: ", process.env.DEV_PROXY_SERVER);
   devProxyServer = process.env.DEV_PROXY_SERVER;
 }
 
@@ -14,22 +13,22 @@ export default defineConfig({
   plugins: [
     react(),
     codeInspectorPlugin({
-      bundler: "vite",
+      bundler: 'vite',
     }),
   ],
   server: {
-    host: "0.0.0.0",
+    host: '0.0.0.0',
     port: 3001,
     proxy: {
-      "^/api": {
+      '^/api': {
         target: devProxyServer,
         xfwd: true,
       },
-      "^/memos.api.v1": {
+      '^/memos.api.v1': {
         target: devProxyServer,
         xfwd: true,
       },
-      "^/file": {
+      '^/file': {
         target: devProxyServer,
         xfwd: true,
       },
@@ -37,15 +36,15 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "@/": `${resolve(__dirname, "src")}/`,
+      '@/': `${resolve(__dirname, 'src')}/`,
     },
   },
   build: {
     rollupOptions: {
       output: {
-        entryFileNames: "app.[hash].js",
-        chunkFileNames: "assets/chunk-vendors.[hash].js",
-        assetFileNames: "assets/[name].[hash][extname]",
+        entryFileNames: 'app.[hash].js',
+        chunkFileNames: 'assets/chunk-vendors.[hash].js',
+        assetFileNames: 'assets/[name].[hash][extname]',
       },
     },
   },

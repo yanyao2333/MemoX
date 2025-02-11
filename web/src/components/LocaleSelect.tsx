@@ -1,7 +1,7 @@
-import { Option, Select } from "@mui/joy";
-import { GlobeIcon } from "lucide-react";
-import { FC } from "react";
-import { locales } from "@/i18n";
+import { locales } from '@/i18n';
+import { Option, Select } from '@mui/joy';
+import { GlobeIcon } from 'lucide-react';
+import type { FC } from 'react';
 
 interface Props {
   value: Locale;
@@ -18,14 +18,16 @@ const LocaleSelect: FC<Props> = (props: Props) => {
 
   return (
     <Select
-      className={`!min-w-[10rem] w-auto whitespace-nowrap ${className ?? ""}`}
-      startDecorator={<GlobeIcon className="w-4 h-auto" />}
+      className={`!min-w-[10rem] w-auto whitespace-nowrap ${className ?? ''}`}
+      startDecorator={<GlobeIcon className="h-auto w-4" />}
       value={value}
       onChange={(_, value) => handleSelectChange(value as Locale)}
     >
       {locales.map((locale) => {
         try {
-          const languageName = new Intl.DisplayNames([locale], { type: "language" }).of(locale);
+          const languageName = new Intl.DisplayNames([locale], {
+            type: 'language',
+          }).of(locale);
           if (languageName) {
             return (
               <Option key={locale} value={locale}>
@@ -33,7 +35,7 @@ const LocaleSelect: FC<Props> = (props: Props) => {
               </Option>
             );
           }
-        } catch (error) {
+        } catch (_error) {
           // do nth
         }
 

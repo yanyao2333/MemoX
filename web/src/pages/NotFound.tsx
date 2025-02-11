@@ -1,12 +1,14 @@
-import MobileHeader from "@/components/MobileHeader";
+import MobileHeader from '@/components/MobileHeader';
 
 const NotFound = () => {
   return (
-    <section className="@container w-full max-w-5xl min-h-[100svh] flex flex-col justify-start items-center sm:pt-3 md:pt-6 pb-8">
+    <section className="@container flex min-h-[100svh] w-full max-w-5xl flex-col items-center justify-start pb-8 sm:pt-3 md:pt-6">
       <MobileHeader />
-      <div className="w-full px-4 grow flex flex-col justify-center items-center sm:px-6">
-        <p className="font-medium">{"The page you are looking for can't be found."}</p>
-        <p className="mt-4 text-[8rem] font-mono dark:text-gray-300">404</p>
+      <div className="flex w-full grow flex-col items-center justify-center px-4 sm:px-6">
+        <p className="font-medium">
+          {"The page you are looking for can't be found."}
+        </p>
+        <p className="mt-4 font-mono text-[8rem] dark:text-gray-300">404</p>
       </div>
     </section>
   );

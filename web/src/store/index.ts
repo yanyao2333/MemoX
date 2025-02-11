@@ -1,6 +1,10 @@
-import { configureStore } from "@reduxjs/toolkit";
-import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
-import dialogReducer from "./reducer/dialog";
+import { configureStore } from '@reduxjs/toolkit';
+import {
+  type TypedUseSelectorHook,
+  useDispatch,
+  useSelector,
+} from 'react-redux';
+import dialogReducer from './reducer/dialog';
 
 const store = configureStore({
   reducer: {

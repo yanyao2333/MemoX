@@ -1,9 +1,9 @@
-import { LoaderIcon } from "lucide-react";
+import { LoaderIcon } from 'lucide-react';
 
 function Loading() {
   return (
-    <div className="fixed w-full h-full flex flex-row justify-center items-center">
-      <div className="w-80 max-w-full h-full py-4 flex flex-col justify-center items-center">
+    <div className="fixed flex h-full w-full flex-row items-center justify-center">
+      <div className="flex h-full w-80 max-w-full flex-col items-center justify-center py-4">
         <LoaderIcon className="animate-spin dark:text-gray-200" />
       </div>
     </div>

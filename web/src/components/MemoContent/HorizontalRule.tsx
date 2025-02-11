@@ -1,5 +1,5 @@
-import { Divider } from "@mui/joy";
-import { BaseProps } from "./types";
+import { Divider } from '@mui/joy';
+import type { BaseProps } from './types';
 
 interface Props extends BaseProps {
   symbol: string;

@@ -1,12 +1,12 @@
-import { BellIcon } from "lucide-react";
-import { useEffect } from "react";
-import Empty from "@/components/Empty";
-import MemoCommentMessage from "@/components/Inbox/MemoCommentMessage";
-import VersionUpdateMessage from "@/components/Inbox/VersionUpdateMessage";
-import MobileHeader from "@/components/MobileHeader";
-import { useInboxStore } from "@/store/v1";
-import { Inbox_Status, Inbox_Type } from "@/types/proto/api/v1/inbox_service";
-import { useTranslate } from "@/utils/i18n";
+import Empty from '@/components/Empty';
+import MemoCommentMessage from '@/components/Inbox/MemoCommentMessage';
+import VersionUpdateMessage from '@/components/Inbox/VersionUpdateMessage';
+import MobileHeader from '@/components/MobileHeader';
+import { useInboxStore } from '@/store/v1';
+import { Inbox_Status, Inbox_Type } from '@/types/proto/api/v1/inbox_service';
+import { useTranslate } from '@/utils/i18n';
+import { BellIcon } from 'lucide-react';
+import { useEffect } from 'react';
 
 const Inboxes = () => {
   const t = useTranslate();
@@ -23,29 +23,42 @@ const Inboxes = () => {
   }, []);
 
   return (
-    <section className="@container w-full max-w-5xl min-h-full flex flex-col justify-start items-center sm:pt-3 md:pt-6 pb-8">
+    <section className="@container flex min-h-full w-full max-w-5xl flex-col items-center justify-start pb-8 sm:pt-3 md:pt-6">
       <MobileHeader />
       <div className="w-full px-4 sm:px-6">
-        <div className="w-full shadow flex flex-col justify-start items-start px-4 py-3 rounded-xl bg-white dark:bg-zinc-800 text-black dark:text-gray-300">
-          <div className="relative w-full flex flex-row justify-between items-center">
-            <p className="py-1 flex flex-row justify-start items-center select-none opacity-80">
-              <BellIcon className="w-6 h-auto mr-1 opacity-80" />
-              <span className="text-lg">{t("common.inbox")}</span>
+        <div className="flex w-full flex-col items-start justify-start rounded-xl bg-white px-4 py-3 text-black shadow dark:bg-zinc-800 dark:text-gray-300">
+          <div className="relative flex w-full flex-row items-center justify-between">
+            <p className="flex select-none flex-row items-center justify-start py-1 opacity-80">
+              <BellIcon className="mr-1 h-auto w-6 opacity-80" />
+              <span className="text-lg">{t('common.inbox')}</span>
             </p>
           </div>
-          <div className="w-full h-auto flex flex-col justify-start items-start px-2 pb-4">
+          <div className="flex h-auto w-full flex-col items-start justify-start px-2 pb-4">
             {inboxes.length === 0 && (
-              <div className="w-full mt-4 mb-8 flex flex-col justify-center items-center italic">
+              <div className="mt-4 mb-8 flex w-full flex-col items-center justify-center italic">
                 <Empty />
-                <p className="mt-4 text-gray-600 dark:text-gray-400">{t("message.no-data")}</p>
+                <p className="mt-4 text-gray-600 dark:text-gray-400">
+                  {t('message.no-data')}
+                </p>
               </div>
             )}
-            <div className="flex flex-col justify-start items-start w-full mt-4 gap-4">
+            <div className="mt-4 flex w-full flex-col items-start justify-start gap-4">
               {inboxes.map((inbox) => {
                 if (inbox.type === Inbox_Type.MEMO_COMMENT) {
-                  return <MemoCommentMessage key={`${inbox.name}-${inbox.status}`} inbox={inbox} />;
-                } else if (inbox.type === Inbox_Type.VERSION_UPDATE) {
-                  return <VersionUpdateMessage key={`${inbox.name}-${inbox.status}`} inbox={inbox} />;
+                  return (
+                    <MemoCommentMessage
+                      key={`${inbox.name}-${inbox.status}`}
+                      inbox={inbox}
+                    />
+                  );
+                }
+                if (inbox.type === Inbox_Type.VERSION_UPDATE) {
+                  return (
+                    <VersionUpdateMessage
+                      key={`${inbox.name}-${inbox.status}`}
+                      inbox={inbox}
+                    />
+                  );
                 }
                 return undefined;
               })}

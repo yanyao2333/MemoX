@@ -1,7 +1,11 @@
-import { create } from "zustand";
-import { combine } from "zustand/middleware";
-import { authServiceClient, userServiceClient } from "@/grpcweb";
-import { User, UserSetting, User_Role } from "@/types/proto/api/v1/user_service";
+import { authServiceClient, userServiceClient } from '@/grpcweb';
+import {
+  type User,
+  UserSetting,
+  User_Role,
+} from '@/types/proto/api/v1/user_service';
+import { create } from 'zustand';
+import { combine } from 'zustand/middleware';
 
 interface State {
   userMapByName: Record<string, User>;
@@ -18,9 +22,9 @@ const getDefaultState = (): State => ({
 
 const getDefaultUserSetting = () => {
   return UserSetting.fromPartial({
-    locale: "en",
-    appearance: "auto",
-    memoVisibility: "PRIVATE",
+    locale: 'en',
+    appearance: 'auto',
+    memoVisibility: 'PRIVATE',
   });
 };
 
@@ -56,7 +60,7 @@ export const useUserStore = create(
       requestCache.set(name, promisedUser);
       const user = await promisedUser;
       if (!user) {
-        throw new Error("User not found");
+        throw new Error('User not found');
       }
       requestCache.delete(name);
       userMap[name] = user;
@@ -125,7 +129,10 @@ export const useUserStore = create(
       });
       return user;
     },
-    updateUserSetting: async (userSetting: Partial<UserSetting>, updateMask: string[]) => {
+    updateUserSetting: async (
+      userSetting: Partial<UserSetting>,
+      updateMask: string[]
+    ) => {
       const updatedUserSetting = await userServiceClient.updateUserSetting({
         setting: userSetting,
         updateMask: updateMask,
@@ -133,15 +140,15 @@ export const useUserStore = create(
       set({ userSetting: updatedUserSetting });
       return updatedUserSetting;
     },
-  })),
+  }))
 );
 
 export const stringifyUserRole = (role: User_Role) => {
   if (role === User_Role.HOST) {
-    return "Host";
-  } else if (role === User_Role.ADMIN) {
-    return "Admin";
-  } else {
-    return "User";
+    return 'Host';
   }
+  if (role === User_Role.ADMIN) {
+    return 'Admin';
+  }
+  return 'User';
 };

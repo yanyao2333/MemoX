@@ -1,1 +1,1 @@
-export { generateDialog } from "./BaseDialog";
+export { generateDialog } from './BaseDialog';

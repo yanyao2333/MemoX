@@ -1,10 +1,10 @@
-import clsx from "clsx";
-import { isEqual } from "lodash-es";
-import { CheckCircleIcon, Code2Icon, HashIcon, LinkIcon } from "lucide-react";
-import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
-import { Memo, MemoProperty } from "@/types/proto/api/v1/memo_service";
-import { useTranslate } from "@/utils/i18n";
-import MemoRelationForceGraph from "../MemoRelationForceGraph";
+import { MemoRelation_Type } from '@/types/proto/api/v1/memo_relation_service';
+import { type Memo, MemoProperty } from '@/types/proto/api/v1/memo_service';
+import { useTranslate } from '@/utils/i18n';
+import clsx from 'clsx';
+import { isEqual } from 'lodash-es';
+import { CheckCircleIcon, Code2Icon, HashIcon, LinkIcon } from 'lucide-react';
+import MemoRelationForceGraph from '../MemoRelationForceGraph';
 
 interface Props {
   memo: Memo;
@@ -14,67 +14,77 @@ interface Props {
 const MemoDetailSidebar = ({ memo, className }: Props) => {
   const t = useTranslate();
   const property = MemoProperty.fromPartial(memo.property || {});
-  const hasSpecialProperty = property.hasLink || property.hasTaskList || property.hasCode || property.hasIncompleteTasks;
-  const shouldShowRelationGraph = memo.relations.filter((r) => r.type === MemoRelation_Type.REFERENCE).length > 0;
+  const hasSpecialProperty =
+    property.hasLink ||
+    property.hasTaskList ||
+    property.hasCode ||
+    property.hasIncompleteTasks;
+  const shouldShowRelationGraph =
+    memo.relations.filter((r) => r.type === MemoRelation_Type.REFERENCE)
+      .length > 0;
 
   return (
     <aside
       className={clsx(
-        "relative w-full h-auto max-h-screen overflow-auto hide-scrollbar flex flex-col justify-start items-start",
-        className,
+        'hide-scrollbar relative flex h-auto max-h-screen w-full flex-col items-start justify-start overflow-auto',
+        className
       )}
     >
-      <div className="flex flex-col justify-start items-start w-full px-1 gap-2 h-auto shrink-0 flex-nowrap hide-scrollbar">
+      <div className="hide-scrollbar flex h-auto w-full shrink-0 flex-col flex-nowrap items-start justify-start gap-2 px-1">
         {shouldShowRelationGraph && (
-          <div className="relative w-full h-36 border rounded-lg bg-zinc-50 dark:bg-zinc-900 dark:border-zinc-800">
-            <MemoRelationForceGraph className="w-full h-full" memo={memo} />
-            <div className="absolute top-1 left-2 text-xs opacity-60 font-mono gap-1 flex flex-row items-center">
+          <div className="relative h-36 w-full rounded-lg border bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-900">
+            <MemoRelationForceGraph className="h-full w-full" memo={memo} />
+            <div className="absolute top-1 left-2 flex flex-row items-center gap-1 font-mono text-xs opacity-60">
               <span>Relations</span>
               <span className="text-xs opacity-60">(Beta)</span>
             </div>
           </div>
         )}
-        <div className="w-full flex flex-col">
-          <p className="flex flex-row justify-start items-center w-full gap-1 mb-1 text-sm leading-6 text-gray-400 dark:text-gray-500 select-none">
+        <div className="flex w-full flex-col">
+          <p className="mb-1 flex w-full select-none flex-row items-center justify-start gap-1 text-gray-400 text-sm leading-6 dark:text-gray-500">
             <span>Created at</span>
           </p>
-          <p className="text-sm text-gray-500 dark:text-gray-400">{memo.createTime?.toLocaleString()}</p>
+          <p className="text-gray-500 text-sm dark:text-gray-400">
+            {memo.createTime?.toLocaleString()}
+          </p>
         </div>
         {!isEqual(memo.createTime, memo.updateTime) && (
-          <div className="w-full flex flex-col">
-            <p className="flex flex-row justify-start items-center w-full gap-1 mb-1 text-sm leading-6 text-gray-400 dark:text-gray-500 select-none">
+          <div className="flex w-full flex-col">
+            <p className="mb-1 flex w-full select-none flex-row items-center justify-start gap-1 text-gray-400 text-sm leading-6 dark:text-gray-500">
               <span>Last updated at</span>
             </p>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{memo.updateTime?.toLocaleString()}</p>
+            <p className="text-gray-500 text-sm dark:text-gray-400">
+              {memo.updateTime?.toLocaleString()}
+            </p>
           </div>
         )}
         {hasSpecialProperty && (
-          <div className="w-full flex flex-col">
-            <p className="flex flex-row justify-start items-center w-full gap-1 mb-1 text-sm leading-6 text-gray-400 dark:text-gray-500 select-none">
+          <div className="flex w-full flex-col">
+            <p className="mb-1 flex w-full select-none flex-row items-center justify-start gap-1 text-gray-400 text-sm leading-6 dark:text-gray-500">
               <span>Properties</span>
             </p>
-            <div className="w-full flex flex-row justify-start items-center gap-x-2 gap-y-1 flex-wrap text-gray-500 dark:text-gray-400">
+            <div className="flex w-full flex-row flex-wrap items-center justify-start gap-x-2 gap-y-1 text-gray-500 dark:text-gray-400">
               {property.hasLink && (
-                <div className="w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center">
-                  <div className="w-auto flex justify-start items-center mr-1">
-                    <LinkIcon className="w-4 h-auto mr-1" />
-                    <span className="block text-sm">{t("memo.links")}</span>
+                <div className="flex w-auto items-center justify-between rounded-md border pr-1.5 pl-1 dark:border-zinc-800">
+                  <div className="mr-1 flex w-auto items-center justify-start">
+                    <LinkIcon className="mr-1 h-auto w-4" />
+                    <span className="block text-sm">{t('memo.links')}</span>
                   </div>
                 </div>
               )}
               {property.hasTaskList && (
-                <div className="w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center">
-                  <div className="w-auto flex justify-start items-center mr-1">
-                    <CheckCircleIcon className="w-4 h-auto mr-1" />
-                    <span className="block text-sm">{t("memo.to-do")}</span>
+                <div className="flex w-auto items-center justify-between rounded-md border pr-1.5 pl-1 dark:border-zinc-800">
+                  <div className="mr-1 flex w-auto items-center justify-start">
+                    <CheckCircleIcon className="mr-1 h-auto w-4" />
+                    <span className="block text-sm">{t('memo.to-do')}</span>
                   </div>
                 </div>
               )}
               {property.hasCode && (
-                <div className="w-auto border dark:border-zinc-800 pl-1 pr-1.5 rounded-md flex justify-between items-center">
-                  <div className="w-auto flex justify-start items-center mr-1">
-                    <Code2Icon className="w-4 h-auto mr-1" />
-                    <span className="block text-sm">{t("memo.code")}</span>
+                <div className="flex w-auto items-center justify-between rounded-md border pr-1.5 pl-1 dark:border-zinc-800">
+                  <div className="mr-1 flex w-auto items-center justify-start">
+                    <Code2Icon className="mr-1 h-auto w-4" />
+                    <span className="block text-sm">{t('memo.code')}</span>
                   </div>
                 </div>
               )}
@@ -83,18 +93,22 @@ const MemoDetailSidebar = ({ memo, className }: Props) => {
         )}
         {memo.tags.length > 0 && (
           <>
-            <div className="flex flex-row justify-start items-center w-full gap-1 mb-1 text-sm leading-6 text-gray-400 dark:text-gray-500 select-none">
-              <span>{t("common.tags")}</span>
+            <div className="mb-1 flex w-full select-none flex-row items-center justify-start gap-1 text-gray-400 text-sm leading-6 dark:text-gray-500">
+              <span>{t('common.tags')}</span>
               <span className="shrink-0">({memo.tags.length})</span>
             </div>
-            <div className="w-full flex flex-row justify-start items-center relative flex-wrap gap-x-2 gap-y-1">
+            <div className="relative flex w-full flex-row flex-wrap items-center justify-start gap-x-2 gap-y-1">
               {memo.tags.map((tag) => (
                 <div
                   key={tag}
-                  className="shrink-0 w-auto max-w-full text-sm rounded-md leading-6 flex flex-row justify-start items-center select-none hover:opacity-80 text-gray-600 dark:text-gray-400 dark:border-zinc-800"
+                  className="flex w-auto max-w-full shrink-0 select-none flex-row items-center justify-start rounded-md text-gray-600 text-sm leading-6 hover:opacity-80 dark:border-zinc-800 dark:text-gray-400"
                 >
-                  <HashIcon className="group-hover:hidden w-4 h-auto shrink-0 opacity-40" />
-                  <div className={clsx("inline-flex flex-nowrap ml-0.5 gap-0.5 cursor-pointer max-w-[calc(100%-16px)]")}>
+                  <HashIcon className="h-auto w-4 shrink-0 opacity-40 group-hover:hidden" />
+                  <div
+                    className={clsx(
+                      'ml-0.5 inline-flex max-w-[calc(100%-16px)] cursor-pointer flex-nowrap gap-0.5'
+                    )}
+                  >
                     <span className="truncate dark:opacity-80">{tag}</span>
                   </div>
                 </div>

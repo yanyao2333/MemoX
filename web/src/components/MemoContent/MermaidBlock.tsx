@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
 interface Props {
   content: string;
@@ -10,8 +10,8 @@ const MermaidBlock: React.FC<Props> = ({ content }: Props) => {
   useEffect(() => {
     // Dynamically import mermaid to ensure compatibility with Vite
     const initializeMermaid = async () => {
-      const mermaid = (await import("mermaid")).default;
-      mermaid.initialize({ startOnLoad: false, theme: "default" });
+      const mermaid = (await import('mermaid')).default;
+      mermaid.initialize({ startOnLoad: false, theme: 'default' });
       if (mermaidDockBlock.current) {
         mermaid.run({
           nodes: [mermaidDockBlock.current],
@@ -23,7 +23,10 @@ const MermaidBlock: React.FC<Props> = ({ content }: Props) => {
   }, [content]);
 
   return (
-    <pre ref={mermaidDockBlock} className="w-full p-2 whitespace-pre-wrap relative">
+    <pre
+      ref={mermaidDockBlock}
+      className="relative w-full whitespace-pre-wrap p-2"
+    >
       {content}
     </pre>
   );

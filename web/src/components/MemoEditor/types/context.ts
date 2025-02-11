@@ -1,6 +1,6 @@
-import { createContext } from "react";
-import { MemoRelation } from "@/types/proto/api/v1/memo_relation_service";
-import { Resource } from "@/types/proto/api/v1/resource_service";
+import type { MemoRelation } from '@/types/proto/api/v1/memo_relation_service';
+import type { Resource } from '@/types/proto/api/v1/resource_service';
+import { createContext } from 'react';
 
 interface Context {
   resourceList: Resource[];

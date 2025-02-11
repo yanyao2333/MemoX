@@ -1,6 +1,6 @@
-import { Tooltip } from "@mui/joy";
-import clsx from "clsx";
-import { useRef, useState, useEffect } from "react";
+import { Tooltip } from '@mui/joy';
+import clsx from 'clsx';
+import { useEffect, useRef, useState } from 'react';
 
 interface Props {
   children: React.ReactNode;
@@ -16,12 +16,19 @@ const OverflowTip = ({ children, className }: Props) => {
       return;
     }
 
-    setIsOverflow(textElementRef.current.scrollWidth > textElementRef.current.clientWidth);
+    setIsOverflow(
+      textElementRef.current.scrollWidth > textElementRef.current.clientWidth
+    );
   }, []);
 
   return (
-    <Tooltip title={children} placement="top" arrow disableHoverListener={!isOverflowed}>
-      <div ref={textElementRef} className={clsx("truncate", className)}>
+    <Tooltip
+      title={children}
+      placement="top"
+      arrow
+      disableHoverListener={!isOverflowed}
+    >
+      <div ref={textElementRef} className={clsx('truncate', className)}>
         {children}
       </div>
     </Tooltip>

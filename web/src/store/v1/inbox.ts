@@ -1,7 +1,7 @@
-import { create } from "zustand";
-import { combine } from "zustand/middleware";
-import { inboxServiceClient } from "@/grpcweb";
-import { Inbox } from "@/types/proto/api/v1/inbox_service";
+import { inboxServiceClient } from '@/grpcweb';
+import type { Inbox } from '@/types/proto/api/v1/inbox_service';
+import { create } from 'zustand';
+import { combine } from 'zustand/middleware';
 
 interface State {
   inboxes: Inbox[];
@@ -24,8 +24,12 @@ export const useInboxStore = create(
         updateMask,
       });
       const inboxes = get().inboxes;
-      set({ inboxes: inboxes.map((i) => (i.name === updatedInbox.name ? updatedInbox : i)) });
+      set({
+        inboxes: inboxes.map((i) =>
+          i.name === updatedInbox.name ? updatedInbox : i
+        ),
+      });
       return updatedInbox;
     },
-  })),
+  }))
 );

@@ -1,16 +1,22 @@
-import { Tooltip } from "@mui/joy";
-import clsx from "clsx";
-import { InboxIcon, LoaderIcon, MessageCircleIcon } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { activityServiceClient } from "@/grpcweb";
-import useAsyncEffect from "@/hooks/useAsyncEffect";
-import useNavigateTo from "@/hooks/useNavigateTo";
-import { activityNamePrefix, memoNamePrefix, useInboxStore, useMemoStore, useUserStore } from "@/store/v1";
-import { Inbox, Inbox_Status } from "@/types/proto/api/v1/inbox_service";
-import { Memo } from "@/types/proto/api/v1/memo_service";
-import { User } from "@/types/proto/api/v1/user_service";
-import { useTranslate } from "@/utils/i18n";
+import { activityServiceClient } from '@/grpcweb';
+import useAsyncEffect from '@/hooks/useAsyncEffect';
+import useNavigateTo from '@/hooks/useNavigateTo';
+import {
+  activityNamePrefix,
+  memoNamePrefix,
+  useInboxStore,
+  useMemoStore,
+  useUserStore,
+} from '@/store/v1';
+import { type Inbox, Inbox_Status } from '@/types/proto/api/v1/inbox_service';
+import type { Memo } from '@/types/proto/api/v1/memo_service';
+import type { User } from '@/types/proto/api/v1/user_service';
+import { useTranslate } from '@/utils/i18n';
+import { Tooltip } from '@mui/joy';
+import clsx from 'clsx';
+import { InboxIcon, LoaderIcon, MessageCircleIcon } from 'lucide-react';
+import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 interface Props {
   inbox: Inbox;
@@ -37,9 +43,12 @@ const MemoCommentMessage = ({ inbox }: Props) => {
     if (activity.payload?.memoComment) {
       const memoCommentPayload = activity.payload.memoComment;
       const relatedMemoId = memoCommentPayload.relatedMemoId;
-      const memo = await memoStore.getOrFetchMemoByName(`${memoNamePrefix}${relatedMemoId}`, {
-        skipStore: true,
-      });
+      const memo = await memoStore.getOrFetchMemoByName(
+        `${memoNamePrefix}${relatedMemoId}`,
+        {
+          skipStore: true,
+        }
+      );
       setRelatedMemo(memo);
       const sender = await userStore.getOrFetchUserByName(inbox.sender);
       setSender(sender);
@@ -64,42 +73,44 @@ const MemoCommentMessage = ({ inbox }: Props) => {
         name: inbox.name,
         status: Inbox_Status.ARCHIVED,
       },
-      ["status"],
+      ['status']
     );
     if (!silence) {
-      toast.success(t("message.archived-successfully"));
+      toast.success(t('message.archived-successfully'));
     }
   };
 
   return (
-    <div className="w-full flex flex-row justify-start items-start gap-3">
+    <div className="flex w-full flex-row items-start justify-start gap-3">
       <div
         className={clsx(
-          "shrink-0 mt-2 p-2 rounded-full border",
+          'mt-2 shrink-0 rounded-full border p-2',
           inbox.status === Inbox_Status.UNREAD
-            ? "border-blue-600 text-blue-600 bg-blue-50 dark:bg-zinc-800"
-            : "border-gray-500 text-gray-500 bg-gray-50 dark:bg-zinc-800",
+            ? 'border-blue-600 bg-blue-50 text-blue-600 dark:bg-zinc-800'
+            : 'border-gray-500 bg-gray-50 text-gray-500 dark:bg-zinc-800'
         )}
       >
-        <Tooltip title={"Comment"} placement="bottom">
-          <MessageCircleIcon className="w-4 sm:w-5 h-auto" />
+        <Tooltip title={'Comment'} placement="bottom">
+          <MessageCircleIcon className="h-auto w-4 sm:w-5" />
         </Tooltip>
       </div>
       <div
         className={clsx(
-          "border w-full p-2 px-3 rounded-lg flex flex-col justify-start items-start gap-1 dark:border-zinc-700 hover:bg-gray-100 dark:hover:bg-zinc-700",
-          inbox.status !== Inbox_Status.UNREAD && "opacity-60",
+          'flex w-full flex-col items-start justify-start gap-1 rounded-lg border p-2 px-3 hover:bg-gray-100 dark:border-zinc-700 dark:hover:bg-zinc-700',
+          inbox.status !== Inbox_Status.UNREAD && 'opacity-60'
         )}
       >
         {initialized ? (
           <>
-            <div className="w-full flex flex-row justify-between items-center">
-              <span className="text-sm text-gray-500">{inbox.createTime?.toLocaleString()}</span>
+            <div className="flex w-full flex-row items-center justify-between">
+              <span className="text-gray-500 text-sm">
+                {inbox.createTime?.toLocaleString()}
+              </span>
               <div>
                 {inbox.status === Inbox_Status.UNREAD && (
-                  <Tooltip title={t("common.archive")} placement="top">
+                  <Tooltip title={t('common.archive')} placement="top">
                     <InboxIcon
-                      className="w-4 h-auto cursor-pointer text-gray-400 hover:text-blue-600"
+                      className="h-auto w-4 cursor-pointer text-gray-400 hover:text-blue-600"
                       onClick={() => handleArchiveMessage()}
                     />
                   </Tooltip>
@@ -107,10 +118,10 @@ const MemoCommentMessage = ({ inbox }: Props) => {
               </div>
             </div>
             <p
-              className="text-base leading-tight cursor-pointer text-gray-500 dark:text-gray-400 hover:underline hover:text-blue-600"
+              className="cursor-pointer text-base text-gray-500 leading-tight hover:text-blue-600 hover:underline dark:text-gray-400"
               onClick={handleNavigateToMemo}
             >
-              {t("inbox.memo-comment", {
+              {t('inbox.memo-comment', {
                 user: sender?.nickname || sender?.username,
                 memo: `memos/${relatedMemo?.uid}`,
                 interpolation: { escapeValue: false },
@@ -118,7 +129,7 @@ const MemoCommentMessage = ({ inbox }: Props) => {
             </p>
           </>
         ) : (
-          <div className="w-full flex flex-row justify-center items-center my-2">
+          <div className="my-2 flex w-full flex-row items-center justify-center">
             <LoaderIcon className="animate-spin text-zinc-500" />
           </div>
         )}

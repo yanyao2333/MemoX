@@ -1,4 +1,4 @@
-import clsx from "clsx";
+import clsx from 'clsx';
 
 interface Props {
   avatarUrl?: string;
@@ -8,10 +8,10 @@ interface Props {
 const UserAvatar = (props: Props) => {
   const { avatarUrl, className } = props;
   return (
-    <div className={clsx(`w-8 h-8 overflow-clip rounded-xl`, className)}>
+    <div className={clsx('h-8 w-8 overflow-clip rounded-xl', className)}>
       <img
-        className="w-full h-auto shadow min-w-full min-h-full object-cover dark:opacity-80"
-        src={avatarUrl || "/full-logo.webp"}
+        className="h-auto min-h-full w-full min-w-full object-cover shadow dark:opacity-80"
+        src={avatarUrl || '/full-logo.webp'}
         decoding="async"
         loading="lazy"
         alt=""

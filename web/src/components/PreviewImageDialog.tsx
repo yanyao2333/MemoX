@@ -1,7 +1,8 @@
-import { XIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { generateDialog } from "./Dialog";
-import "@/less/preview-image-dialog.less";
+import { XIcon } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { generateDialog } from './Dialog';
+import '@/less/preview-image-dialog.less';
 
 const MIN_SCALE = 0.5;
 const MAX_SCALE = 5;
@@ -24,7 +25,11 @@ const defaultState: State = {
   originY: -1,
 };
 
-const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }: Props) => {
+const PreviewImageDialog: React.FC<Props> = ({
+  destroy,
+  imgUrls,
+  initialIndex,
+}: Props) => {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [state, setState] = useState<State>(defaultState);
   let startX = -1;
@@ -95,9 +100,9 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
   };
 
   const handleImageContainerKeyDown = (event: KeyboardEvent) => {
-    if (event.key == "ArrowLeft") {
+    if (event.key === 'ArrowLeft') {
       showPrevImg();
-    } else if (event.key == "ArrowRight") {
+    } else if (event.key === 'ArrowRight') {
       showNextImg();
     }
   };
@@ -106,7 +111,10 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
     const offsetX = event.nativeEvent.offsetX;
     const offsetY = event.nativeEvent.offsetY;
     const sign = event.deltaY < 0 ? 1 : -1;
-    const scale = Math.max(MIN_SCALE, Math.min(MAX_SCALE, state.scale + sign * SCALE_UNIT));
+    const scale = Math.max(
+      MIN_SCALE,
+      Math.min(MAX_SCALE, state.scale + sign * SCALE_UNIT)
+    );
     setState({
       ...state,
       originX: offsetX,
@@ -116,21 +124,27 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
   };
 
   const setViewportScalable = () => {
-    const viewport = document.querySelector("meta[name=viewport]");
+    const viewport = document.querySelector('meta[name=viewport]');
     if (viewport) {
-      const contentAttrs = viewport.getAttribute("content");
+      const contentAttrs = viewport.getAttribute('content');
       if (contentAttrs) {
-        viewport.setAttribute("content", contentAttrs.replace("user-scalable=no", "user-scalable=yes"));
+        viewport.setAttribute(
+          'content',
+          contentAttrs.replace('user-scalable=no', 'user-scalable=yes')
+        );
       }
     }
   };
 
   const destroyAndResetViewport = () => {
-    const viewport = document.querySelector("meta[name=viewport]");
+    const viewport = document.querySelector('meta[name=viewport]');
     if (viewport) {
-      const contentAttrs = viewport.getAttribute("content");
+      const contentAttrs = viewport.getAttribute('content');
       if (contentAttrs) {
-        viewport.setAttribute("content", contentAttrs.replace("user-scalable=yes", "user-scalable=no"));
+        viewport.setAttribute(
+          'content',
+          contentAttrs.replace('user-scalable=yes', 'user-scalable=no')
+        );
       }
     }
     destroy();
@@ -138,7 +152,7 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
 
   const imageComputedStyle = {
     transform: `scale(${state.scale})`,
-    transformOrigin: `${state.originX === -1 ? "center" : `${state.originX}px`} ${state.originY === -1 ? "center" : `${state.originY}px`}`,
+    transformOrigin: `${state.originX === -1 ? 'center' : `${state.originX}px`} ${state.originY === -1 ? 'center' : `${state.originY}px`}`,
   };
 
   useEffect(() => {
@@ -146,9 +160,9 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
   }, []);
 
   useEffect(() => {
-    document.addEventListener("keydown", handleImageContainerKeyDown);
+    document.addEventListener('keydown', handleImageContainerKeyDown);
     return () => {
-      document.removeEventListener("keydown", handleImageContainerKeyDown);
+      document.removeEventListener('keydown', handleImageContainerKeyDown);
     };
   }, [currentIndex]);
 
@@ -176,16 +190,19 @@ const PreviewImageDialog: React.FC<Props> = ({ destroy, imgUrls, initialIndex }:
   );
 };
 
-export default function showPreviewImageDialog(imgUrls: string[] | string, initialIndex?: number): void {
+export default function showPreviewImageDialog(
+  imgUrls: string[] | string,
+  initialIndex?: number
+): void {
   generateDialog(
     {
-      className: "preview-image-dialog",
-      dialogName: "preview-image-dialog",
+      className: 'preview-image-dialog',
+      dialogName: 'preview-image-dialog',
     },
     PreviewImageDialog,
     {
       imgUrls: Array.isArray(imgUrls) ? imgUrls : [imgUrls],
       initialIndex: initialIndex || 0,
-    },
+    }
   );
 }

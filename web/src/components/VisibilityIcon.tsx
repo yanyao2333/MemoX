@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import { Globe2Icon, LockIcon, UsersIcon } from "lucide-react";
-import { twMerge } from "tailwind-merge";
-import { Visibility } from "@/types/proto/api/v1/memo_service";
+import { Visibility } from '@/types/proto/api/v1/memo_service';
+import clsx from 'clsx';
+import { Globe2Icon, LockIcon, UsersIcon } from 'lucide-react';
+import { twMerge } from 'tailwind-merge';
 
 interface Props {
   visibility: Visibility;
@@ -23,7 +23,13 @@ const VisibilityIcon = (props: Props) => {
     return null;
   }
 
-  return <VIcon className={twMerge(clsx("w-4 h-auto text-gray-500 dark:text-gray-400", props.className))} />;
+  return (
+    <VIcon
+      className={twMerge(
+        clsx('h-auto w-4 text-gray-500 dark:text-gray-400', props.className)
+      )}
+    />
+  );
 };
 
 export default VisibilityIcon;

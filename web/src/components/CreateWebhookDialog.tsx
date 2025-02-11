@@ -1,11 +1,12 @@
-import { Button, Input } from "@usememos/mui";
-import { XIcon } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { webhookServiceClient } from "@/grpcweb";
-import useLoading from "@/hooks/useLoading";
-import { useTranslate } from "@/utils/i18n";
-import { generateDialog } from "./Dialog";
+import { webhookServiceClient } from '@/grpcweb';
+import useLoading from '@/hooks/useLoading';
+import { useTranslate } from '@/utils/i18n';
+import { Button, Input } from '@usememos/mui';
+import { XIcon } from 'lucide-react';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { generateDialog } from './Dialog';
 
 interface Props extends DialogProps {
   webhookId?: number;
@@ -21,8 +22,8 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
   const { webhookId, destroy, onConfirm } = props;
   const t = useTranslate();
   const [state, setState] = useState({
-    name: "",
-    url: "",
+    name: '',
+    url: '',
   });
   const requestState = useLoading(false);
   const isCreating = webhookId === undefined;
@@ -63,7 +64,7 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
 
   const handleSaveBtnClick = async () => {
     if (!state.name || !state.url) {
-      toast.error("Please fill all required fields");
+      toast.error('Please fill all required fields');
       return;
     }
 
@@ -80,14 +81,13 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
             name: state.name,
             url: state.url,
           },
-          updateMask: ["name", "url"],
+          updateMask: ['name', 'url'],
         });
       }
 
       onConfirm();
       destroy();
     } catch (error: any) {
-      console.error(error);
       toast.error(error.details);
     }
   };
@@ -95,13 +95,15 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
   return (
     <>
       <div className="dialog-header-container">
-        <p className="title-text">{isCreating ? "Create webhook" : "Edit webhook"}</p>
+        <p className="title-text">
+          {isCreating ? 'Create webhook' : 'Edit webhook'}
+        </p>
         <Button size="sm" variant="plain" onClick={() => destroy()}>
-          <XIcon className="w-5 h-auto" />
+          <XIcon className="h-auto w-5" />
         </Button>
       </div>
       <div className="dialog-content-container !w-80">
-        <div className="w-full flex flex-col justify-start items-start mb-3">
+        <div className="mb-3 flex w-full flex-col items-start justify-start">
           <span className="mb-2">
             Title <span className="text-red-600">*</span>
           </span>
@@ -115,7 +117,7 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
             />
           </div>
         </div>
-        <div className="w-full flex flex-col justify-start items-start mb-3">
+        <div className="mb-3 flex w-full flex-col items-start justify-start">
           <span className="mb-2">
             Payload URL <span className="text-red-600">*</span>
           </span>
@@ -129,12 +131,20 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
             />
           </div>
         </div>
-        <div className="w-full flex flex-row justify-end items-center mt-2 space-x-2">
-          <Button variant="plain" disabled={requestState.isLoading} onClick={destroy}>
-            {t("common.cancel")}
+        <div className="mt-2 flex w-full flex-row items-center justify-end space-x-2">
+          <Button
+            variant="plain"
+            disabled={requestState.isLoading}
+            onClick={destroy}
+          >
+            {t('common.cancel')}
           </Button>
-          <Button color="primary" disabled={requestState.isLoading} onClick={handleSaveBtnClick}>
-            {t("common.create")}
+          <Button
+            color="primary"
+            disabled={requestState.isLoading}
+            onClick={handleSaveBtnClick}
+          >
+            {t('common.create')}
           </Button>
         </div>
       </div>
@@ -145,13 +155,13 @@ const CreateWebhookDialog: React.FC<Props> = (props: Props) => {
 function showCreateWebhookDialog(onConfirm: () => void) {
   generateDialog(
     {
-      className: "create-webhook-dialog",
-      dialogName: "create-webhook-dialog",
+      className: 'create-webhook-dialog',
+      dialogName: 'create-webhook-dialog',
     },
     CreateWebhookDialog,
     {
       onConfirm,
-    },
+    }
   );
 }
 

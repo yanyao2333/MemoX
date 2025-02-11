@@ -1,8 +1,12 @@
-import clsx from "clsx";
-import { head } from "lodash-es";
-import React from "react";
-import { ListNode_Kind, Node, NodeType } from "@/types/proto/api/v1/markdown_service";
-import Renderer from "./Renderer";
+import {
+  ListNode_Kind,
+  type Node,
+  NodeType,
+} from '@/types/proto/api/v1/markdown_service';
+import clsx from 'clsx';
+import { head } from 'lodash-es';
+import React from 'react';
+import Renderer from './Renderer';
 
 interface Props {
   index: string;
@@ -18,13 +22,13 @@ const List: React.FC<Props> = ({ kind, indent, children }: Props) => {
   const getListContainer = () => {
     switch (kind) {
       case ListNode_Kind.ORDERED:
-        return "ol";
+        return 'ol';
       case ListNode_Kind.UNORDERED:
-        return "ul";
+        return 'ul';
       case ListNode_Kind.DESCRIPTION:
-        return "dl";
+        return 'dl';
       default:
-        return "div";
+        return 'div';
     }
   };
 
@@ -44,21 +48,31 @@ const List: React.FC<Props> = ({ kind, indent, children }: Props) => {
     getListContainer(),
     {
       className: clsx(
-        `list-inside ${kind === ListNode_Kind.ORDERED ? "list-decimal" : kind === ListNode_Kind.UNORDERED ? "list-disc" : "list-none"}`,
-        indent > 0 ? `pl-${2 * indent}` : "",
+        `list-inside ${kind === ListNode_Kind.ORDERED ? 'list-decimal' : kind === ListNode_Kind.UNORDERED ? 'list-disc' : 'list-none'}`,
+        indent > 0 ? `pl-${2 * indent}` : ''
       ),
       ...getAttributes(),
     },
     children.map((child, index) => {
-      if (prevNode?.type !== NodeType.LINE_BREAK && child.type === NodeType.LINE_BREAK && skipNextLineBreakFlag) {
+      if (
+        prevNode?.type !== NodeType.LINE_BREAK &&
+        child.type === NodeType.LINE_BREAK &&
+        skipNextLineBreakFlag
+      ) {
         skipNextLineBreakFlag = false;
         return null;
       }
 
       prevNode = child;
       skipNextLineBreakFlag = true;
-      return <Renderer key={`${child.type}-${index}`} index={String(index)} node={child} />;
-    }),
+      return (
+        <Renderer
+          key={`${child.type}-${index}`}
+          index={String(index)}
+          node={child}
+        />
+      );
+    })
   );
 };
 

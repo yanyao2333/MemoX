@@ -307,7 +307,7 @@
       "removed-completed-task-list-items": "Enable removal of completed task list items"
     },
     "memo-related": "Memo",
-    "access-token-section":{
+    "access-token-section": {
       "title": "Access Tokens",
       "description": "A list of all access tokens for your account.",
       "created-at": "Created At",
@@ -327,7 +327,7 @@
       "week-start-day": "Week start day",
       "saturday": "Saturday",
       "sunday": "Sunday",
-      "monday": "Monday"            
+      "monday": "Monday"
     },
     "memo-related-settings": {
       "title": "Memo related settings",

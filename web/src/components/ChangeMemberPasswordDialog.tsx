@@ -1,11 +1,11 @@
-import { Button, Input } from "@usememos/mui";
-import { XIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { toast } from "react-hot-toast";
-import { useUserStore } from "@/store/v1";
-import { User } from "@/types/proto/api/v1/user_service";
-import { useTranslate } from "@/utils/i18n";
-import { generateDialog } from "./Dialog";
+import { useUserStore } from '@/store/v1';
+import type { User } from '@/types/proto/api/v1/user_service';
+import { useTranslate } from '@/utils/i18n';
+import { Button, Input } from '@usememos/mui';
+import { XIcon } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { generateDialog } from './Dialog';
 
 interface Props extends DialogProps {
   user: User;
@@ -15,8 +15,8 @@ const ChangeMemberPasswordDialog: React.FC<Props> = (props: Props) => {
   const { user, destroy } = props;
   const t = useTranslate();
   const userStore = useUserStore();
-  const [newPassword, setNewPassword] = useState("");
-  const [newPasswordAgain, setNewPasswordAgain] = useState("");
+  const [newPassword, setNewPassword] = useState('');
+  const [newPasswordAgain, setNewPasswordAgain] = useState('');
 
   useEffect(() => {
     // do nth
@@ -31,20 +31,22 @@ const ChangeMemberPasswordDialog: React.FC<Props> = (props: Props) => {
     setNewPassword(text);
   };
 
-  const handleNewPasswordAgainChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNewPasswordAgainChanged = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const text = e.target.value as string;
     setNewPasswordAgain(text);
   };
 
   const handleSaveBtnClick = async () => {
-    if (newPassword === "" || newPasswordAgain === "") {
-      toast.error(t("message.fill-all"));
+    if (newPassword === '' || newPasswordAgain === '') {
+      toast.error(t('message.fill-all'));
       return;
     }
 
     if (newPassword !== newPasswordAgain) {
-      toast.error(t("message.new-password-not-match"));
-      setNewPasswordAgain("");
+      toast.error(t('message.new-password-not-match'));
+      setNewPasswordAgain('');
       return;
     }
 
@@ -54,12 +56,11 @@ const ChangeMemberPasswordDialog: React.FC<Props> = (props: Props) => {
           name: user.name,
           password: newPassword,
         },
-        ["password"],
+        ['password']
       );
-      toast(t("message.password-changed"));
+      toast(t('message.password-changed'));
       handleCloseBtnClick();
     } catch (error: any) {
-      console.error(error);
       toast.error(error.details);
     }
   };
@@ -68,35 +69,35 @@ const ChangeMemberPasswordDialog: React.FC<Props> = (props: Props) => {
     <>
       <div className="dialog-header-container !w-64">
         <p className="title-text">
-          {t("setting.account-section.change-password")} ({user.nickname})
+          {t('setting.account-section.change-password')} ({user.nickname})
         </p>
         <Button size="sm" variant="plain" onClick={handleCloseBtnClick}>
-          <XIcon className="w-5 h-auto" />
+          <XIcon className="h-auto w-5" />
         </Button>
       </div>
       <div className="dialog-content-container">
-        <p className="text-sm mb-1">{t("auth.new-password")}</p>
+        <p className="mb-1 text-sm">{t('auth.new-password')}</p>
         <Input
           className="w-full"
           type="password"
-          placeholder={t("auth.new-password")}
+          placeholder={t('auth.new-password')}
           value={newPassword}
           onChange={handleNewPasswordChanged}
         />
-        <p className="text-sm mb-1 mt-2">{t("auth.repeat-new-password")}</p>
+        <p className="mt-2 mb-1 text-sm">{t('auth.repeat-new-password')}</p>
         <Input
           className="w-full"
           type="password"
-          placeholder={t("auth.repeat-new-password")}
+          placeholder={t('auth.repeat-new-password')}
           value={newPasswordAgain}
           onChange={handleNewPasswordAgainChanged}
         />
-        <div className="flex flex-row justify-end items-center mt-4 w-full gap-x-2">
+        <div className="mt-4 flex w-full flex-row items-center justify-end gap-x-2">
           <Button variant="plain" onClick={handleCloseBtnClick}>
-            {t("common.cancel")}
+            {t('common.cancel')}
           </Button>
           <Button color="primary" onClick={handleSaveBtnClick}>
-            {t("common.save")}
+            {t('common.save')}
           </Button>
         </div>
       </div>
@@ -107,11 +108,11 @@ const ChangeMemberPasswordDialog: React.FC<Props> = (props: Props) => {
 function showChangeMemberPasswordDialog(user: User) {
   generateDialog(
     {
-      className: "change-member-password-dialog",
-      dialogName: "change-member-password-dialog",
+      className: 'change-member-password-dialog',
+      dialogName: 'change-member-password-dialog',
     },
     ChangeMemberPasswordDialog,
-    { user },
+    { user }
   );
 }
 

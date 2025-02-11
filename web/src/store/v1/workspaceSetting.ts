@@ -1,9 +1,9 @@
-import { create } from "zustand";
-import { combine } from "zustand/middleware";
-import { workspaceSettingServiceClient } from "@/grpcweb";
-import { WorkspaceSetting } from "@/types/proto/api/v1/workspace_setting_service";
-import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
-import { workspaceSettingNamePrefix } from "./resourceName";
+import { workspaceSettingServiceClient } from '@/grpcweb';
+import { WorkspaceSetting } from '@/types/proto/api/v1/workspace_setting_service';
+import type { WorkspaceSettingKey } from '@/types/proto/store/workspace_setting';
+import { create } from 'zustand';
+import { combine } from 'zustand/middleware';
+import { workspaceSettingNamePrefix } from './resourceName';
 
 interface State {
   workspaceSettingByName: Record<string, WorkspaceSetting>;
@@ -19,15 +19,30 @@ export const useWorkspaceSettingStore = create(
       return get();
     },
     fetchWorkspaceSetting: async (key: WorkspaceSettingKey) => {
-      const setting = await workspaceSettingServiceClient.getWorkspaceSetting({ name: `${workspaceSettingNamePrefix}${key}` });
-      set({ workspaceSettingByName: { ...get().workspaceSettingByName, [setting.name]: setting } });
+      const setting = await workspaceSettingServiceClient.getWorkspaceSetting({
+        name: `${workspaceSettingNamePrefix}${key}`,
+      });
+      set({
+        workspaceSettingByName: {
+          ...get().workspaceSettingByName,
+          [setting.name]: setting,
+        },
+      });
     },
     getWorkspaceSettingByKey: (key: WorkspaceSettingKey): WorkspaceSetting => {
-      return get().workspaceSettingByName[`${workspaceSettingNamePrefix}${key}`] || WorkspaceSetting.fromPartial({});
+      return (
+        get().workspaceSettingByName[`${workspaceSettingNamePrefix}${key}`] ||
+        WorkspaceSetting.fromPartial({})
+      );
     },
     setWorkspaceSetting: async (setting: WorkspaceSetting) => {
       await workspaceSettingServiceClient.setWorkspaceSetting({ setting });
-      set({ workspaceSettingByName: { ...get().workspaceSettingByName, [setting.name]: setting } });
+      set({
+        workspaceSettingByName: {
+          ...get().workspaceSettingByName,
+          [setting.name]: setting,
+        },
+      });
     },
-  })),
+  }))
 );

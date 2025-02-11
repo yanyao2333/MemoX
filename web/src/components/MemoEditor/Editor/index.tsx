@@ -1,9 +1,22 @@
-import clsx from "clsx";
-import { last } from "lodash-es";
-import { forwardRef, ReactNode, useCallback, useEffect, useImperativeHandle, useRef, useState } from "react";
-import { markdownServiceClient } from "@/grpcweb";
-import { NodeType, OrderedListItemNode, TaskListItemNode, UnorderedListItemNode } from "@/types/proto/api/v1/markdown_service";
-import TagSuggestions from "./TagSuggestions";
+import { markdownServiceClient } from '@/grpcweb';
+import {
+  NodeType,
+  type OrderedListItemNode,
+  type TaskListItemNode,
+  type UnorderedListItemNode,
+} from '@/types/proto/api/v1/markdown_service';
+import clsx from 'clsx';
+import { last } from 'lodash-es';
+import {
+  type ReactNode,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import TagSuggestions from './TagSuggestions';
 
 export interface EditorRefActions {
   getEditor: () => HTMLTextAreaElement | null;
@@ -30,8 +43,17 @@ interface Props {
   onPaste: (event: React.ClipboardEvent) => void;
 }
 
-const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<EditorRefActions>) {
-  const { className, initialContent, placeholder, onPaste, onContentChange: handleContentChangeCallback } = props;
+const Editor = forwardRef(function Editor(
+  props: Props,
+  ref: React.ForwardedRef<EditorRefActions>
+) {
+  const {
+    className,
+    initialContent,
+    placeholder,
+    onPaste,
+    onContentChange: handleContentChangeCallback,
+  } = props;
   const [isInIME, setIsInIME] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
@@ -60,7 +82,7 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
         editorRef.current.scrollTop = editorRef.current.scrollHeight;
       }
     },
-    insertText: (content = "", prefix = "", suffix = "") => {
+    insertText: (content = '', prefix = '', suffix = '') => {
       if (!editorRef.current) {
         return;
       }
@@ -77,7 +99,8 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
 
       editorRef.current.value = value;
       editorRef.current.focus();
-      editorRef.current.selectionEnd = endPosition + prefix.length + content.length;
+      editorRef.current.selectionEnd =
+        endPosition + prefix.length + content.length;
       handleContentChangeCallback(editorRef.current.value);
       updateEditorHeight();
     },
@@ -102,7 +125,7 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
       }
     },
     getContent: (): string => {
-      return editorRef.current?.value ?? "";
+      return editorRef.current?.value ?? '';
     },
     getCursorPosition: (): number => {
       return editorRef.current?.selectionStart ?? 0;
@@ -110,25 +133,28 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
     getSelectedContent: () => {
       const start = editorRef.current?.selectionStart;
       const end = editorRef.current?.selectionEnd;
-      return editorRef.current?.value.slice(start, end) ?? "";
+      return editorRef.current?.value.slice(start, end) ?? '';
     },
     setCursorPosition: (startPos: number, endPos?: number) => {
-      const _endPos = isNaN(endPos as number) ? startPos : (endPos as number);
+      const _endPos = Number.isNaN(endPos as number)
+        ? startPos
+        : (endPos as number);
       editorRef.current?.setSelectionRange(startPos, _endPos);
     },
     getCursorLineNumber: () => {
       const cursorPosition = editorRef.current?.selectionStart ?? 0;
-      const lines = editorRef.current?.value.slice(0, cursorPosition).split("\n") ?? [];
+      const lines =
+        editorRef.current?.value.slice(0, cursorPosition).split('\n') ?? [];
       return lines.length - 1;
     },
     getLine: (lineNumber: number) => {
-      return editorRef.current?.value.split("\n")[lineNumber] ?? "";
+      return editorRef.current?.value.split('\n')[lineNumber] ?? '';
     },
     setLine: (lineNumber: number, text: string) => {
-      const lines = editorRef.current?.value.split("\n") ?? [];
+      const lines = editorRef.current?.value.split('\n') ?? [];
       lines[lineNumber] = text;
       if (editorRef.current) {
-        editorRef.current.value = lines.join("\n");
+        editorRef.current.value = lines.join('\n');
         editorRef.current.focus();
         handleContentChangeCallback(editorRef.current.value);
         updateEditorHeight();
@@ -140,40 +166,47 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
 
   const updateEditorHeight = () => {
     if (editorRef.current) {
-      editorRef.current.style.height = "auto";
-      editorRef.current.style.height = (editorRef.current.scrollHeight ?? 0) + "px";
+      editorRef.current.style.height = 'auto';
+      editorRef.current.style.height = `${editorRef.current.scrollHeight ?? 0}px`;
     }
   };
 
   const handleEditorInput = useCallback(() => {
-    handleContentChangeCallback(editorRef.current?.value ?? "");
+    handleContentChangeCallback(editorRef.current?.value ?? '');
     updateEditorHeight();
   }, []);
 
-  const handleEditorKeyDown = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === "Enter" && !isInIME) {
+  const handleEditorKeyDown = async (
+    event: React.KeyboardEvent<HTMLTextAreaElement>
+  ) => {
+    if (event.key === 'Enter' && !isInIME) {
       if (event.shiftKey || event.ctrlKey || event.metaKey || event.altKey) {
         return;
       }
 
       const cursorPosition = editorActions.getCursorPosition();
-      const prevContent = editorActions.getContent().substring(0, cursorPosition);
-      const { nodes } = await markdownServiceClient.parseMarkdown({ markdown: prevContent });
+      const prevContent = editorActions
+        .getContent()
+        .substring(0, cursorPosition);
+      const { nodes } = await markdownServiceClient.parseMarkdown({
+        markdown: prevContent,
+      });
       const lastNode = last(last(nodes)?.listNode?.children);
       if (!lastNode) {
         return;
       }
 
       // Get the indentation of the previous line
-      const lines = prevContent.split("\n");
-      const lastLine = lines[lines.length - 1];
+      const lines = prevContent.split('\n');
+      const lastLine = lines.at(-1);
       const indentationMatch = lastLine.match(/^\s*/);
-      let insertText = indentationMatch ? indentationMatch[0] : ""; // Keep the indentation of the previous line
+      let insertText = indentationMatch ? indentationMatch[0] : ''; // Keep the indentation of the previous line
       if (lastNode.type === NodeType.TASK_LIST_ITEM) {
         const { symbol } = lastNode.taskListItemNode as TaskListItemNode;
         insertText = `${symbol} [ ] `;
       } else if (lastNode.type === NodeType.UNORDERED_LIST_ITEM) {
-        const { symbol } = lastNode.unorderedListItemNode as UnorderedListItemNode;
+        const { symbol } =
+          lastNode.unorderedListItemNode as UnorderedListItemNode;
         insertText = `${symbol} `;
       } else if (lastNode.type === NodeType.ORDERED_LIST_ITEM) {
         const { number } = lastNode.orderedListItemNode as OrderedListItemNode;
@@ -188,12 +221,12 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
   return (
     <div
       className={clsx(
-        "flex flex-col justify-start items-start relative w-full h-auto max-h-[50vh] bg-inherit dark:text-gray-300",
-        className,
+        'relative flex h-auto max-h-[50vh] w-full flex-col items-start justify-start bg-inherit dark:text-gray-300',
+        className
       )}
     >
       <textarea
-        className="w-full h-full my-1 text-base resize-none overflow-x-hidden overflow-y-auto bg-transparent outline-none whitespace-pre-wrap word-break"
+        className="word-break my-1 h-full w-full resize-none overflow-y-auto overflow-x-hidden whitespace-pre-wrap bg-transparent text-base outline-none"
         rows={1}
         placeholder={placeholder}
         ref={editorRef}
@@ -202,7 +235,7 @@ const Editor = forwardRef(function Editor(props: Props, ref: React.ForwardedRef<
         onKeyDown={handleEditorKeyDown}
         onCompositionStart={() => setIsInIME(true)}
         onCompositionEnd={() => setTimeout(() => setIsInIME(false))}
-      ></textarea>
+      />
       <TagSuggestions editorRef={editorRef} editorActions={ref} />
     </div>
   );

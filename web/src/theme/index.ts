@@ -1,20 +1,20 @@
-import { extendTheme } from "@mui/joy";
+import { extendTheme } from '@mui/joy';
 
 const theme = extendTheme({
   components: {
     JoyButton: {
       defaultProps: {
-        size: "sm",
+        size: 'sm',
       },
     },
     JoyInput: {
       defaultProps: {
-        size: "sm",
+        size: 'sm',
       },
     },
     JoySelect: {
       defaultProps: {
-        size: "sm",
+        size: 'sm',
       },
       styleOverrides: {
         listbox: {

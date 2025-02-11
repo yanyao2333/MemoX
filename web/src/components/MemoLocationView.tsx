@@ -1,9 +1,9 @@
-import { LatLng } from "leaflet";
-import { MapPinIcon } from "lucide-react";
-import { useState } from "react";
-import { Location } from "@/types/proto/api/v1/memo_service";
-import LeafletMap from "./LeafletMap";
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover";
+import type { Location } from '@/types/proto/api/v1/memo_service';
+import { LatLng } from 'leaflet';
+import { MapPinIcon } from 'lucide-react';
+import { useState } from 'react';
+import LeafletMap from './LeafletMap';
+import { Popover, PopoverContent, PopoverTrigger } from './ui/Popover';
 
 interface Props {
   location: Location;
@@ -16,16 +16,21 @@ const MemoLocationView: React.FC<Props> = (props: Props) => {
   return (
     <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
       <PopoverTrigger asChild>
-        <p className="w-full flex flex-row gap-0.5 items-center text-gray-500">
-          <MapPinIcon className="w-4 h-auto shrink-0" />
-          <span className="text-sm font-normal text-ellipsis whitespace-nowrap overflow-hidden">
-            {location.placeholder ? location.placeholder : `[${location.latitude}, ${location.longitude}]`}
+        <p className="flex w-full flex-row items-center gap-0.5 text-gray-500">
+          <MapPinIcon className="h-auto w-4 shrink-0" />
+          <span className="overflow-hidden text-ellipsis whitespace-nowrap font-normal text-sm">
+            {location.placeholder
+              ? location.placeholder
+              : `[${location.latitude}, ${location.longitude}]`}
           </span>
         </p>
       </PopoverTrigger>
       <PopoverContent align="start">
-        <div className="min-w-80 sm:w-128 flex flex-col justify-start items-start">
-          <LeafletMap latlng={new LatLng(location.latitude, location.longitude)} readonly={true} />
+        <div className="flex min-w-80 flex-col items-start justify-start sm:w-128">
+          <LeafletMap
+            latlng={new LatLng(location.latitude, location.longitude)}
+            readonly={true}
+          />
         </div>
       </PopoverContent>
     </Popover>

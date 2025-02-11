@@ -1,37 +1,37 @@
-import { createBrowserRouter } from "react-router-dom";
-import App from "@/App";
-import RootLayout from "@/layouts/RootLayout";
-import SuspenseWrapper from "@/layouts/SuspenseWrapper";
-import About from "@/pages/About";
-import AdminSignIn from "@/pages/AdminSignIn";
-import Archived from "@/pages/Archived";
-import AuthCallback from "@/pages/AuthCallback";
-import Explore from "@/pages/Explore";
-import Home from "@/pages/Home";
-import Inboxes from "@/pages/Inboxes";
-import MemoDetail from "@/pages/MemoDetail";
-import NotFound from "@/pages/NotFound";
-import PermissionDenied from "@/pages/PermissionDenied";
-import Resources from "@/pages/Resources";
-import Setting from "@/pages/Setting";
-import SignIn from "@/pages/SignIn";
-import SignUp from "@/pages/SignUp";
-import UserProfile from "@/pages/UserProfile";
+import App from '@/App';
+import RootLayout from '@/layouts/RootLayout';
+import SuspenseWrapper from '@/layouts/SuspenseWrapper';
+import About from '@/pages/About';
+import AdminSignIn from '@/pages/AdminSignIn';
+import Archived from '@/pages/Archived';
+import AuthCallback from '@/pages/AuthCallback';
+import Explore from '@/pages/Explore';
+import Home from '@/pages/Home';
+import Inboxes from '@/pages/Inboxes';
+import MemoDetail from '@/pages/MemoDetail';
+import NotFound from '@/pages/NotFound';
+import PermissionDenied from '@/pages/PermissionDenied';
+import Resources from '@/pages/Resources';
+import Setting from '@/pages/Setting';
+import SignIn from '@/pages/SignIn';
+import SignUp from '@/pages/SignUp';
+import UserProfile from '@/pages/UserProfile';
+import { createBrowserRouter } from 'react-router-dom';
 
 export enum Routes {
-  ROOT = "/",
-  RESOURCES = "/resources",
-  INBOX = "/inbox",
-  ARCHIVED = "/archived",
-  SETTING = "/setting",
-  EXPLORE = "/explore",
-  ABOUT = "/about",
-  AUTH = "/auth",
+  ROOT = '/',
+  RESOURCES = '/resources',
+  INBOX = '/inbox',
+  ARCHIVED = '/archived',
+  SETTING = '/setting',
+  EXPLORE = '/explore',
+  ABOUT = '/about',
+  AUTH = '/auth',
 }
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <App />,
     children: [
       {
@@ -39,19 +39,19 @@ const router = createBrowserRouter([
         element: <SuspenseWrapper />,
         children: [
           {
-            path: "",
+            path: '',
             element: <SignIn />,
           },
           {
-            path: "admin",
+            path: 'admin',
             element: <AdminSignIn />,
           },
           {
-            path: "signup",
+            path: 'signup',
             element: <SignUp />,
           },
           {
-            path: "callback",
+            path: 'callback',
             element: <AuthCallback />,
           },
         ],
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
         element: <RootLayout />,
         children: [
           {
-            path: "",
+            path: '',
             element: <Home />,
           },
           {
@@ -85,11 +85,11 @@ const router = createBrowserRouter([
             element: <Explore />,
           },
           {
-            path: "m/:uid",
+            path: 'm/:uid',
             element: <MemoDetail />,
           },
           {
-            path: "u/:username",
+            path: 'u/:username',
             element: <UserProfile />,
           },
           {
@@ -97,15 +97,15 @@ const router = createBrowserRouter([
             element: <About />,
           },
           {
-            path: "403",
+            path: '403',
             element: <PermissionDenied />,
           },
           {
-            path: "404",
+            path: '404',
             element: <NotFound />,
           },
           {
-            path: "*",
+            path: '*',
             element: <NotFound />,
           },
         ],

@@ -1,34 +1,38 @@
-import { Tooltip } from "@mui/joy";
-import clsx from "clsx";
-import { BookmarkIcon, MessageCircleMoreIcon } from "lucide-react";
-import { memo, useCallback, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import useAsyncEffect from "@/hooks/useAsyncEffect";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import useNavigateTo from "@/hooks/useNavigateTo";
-import { useUserStore, useWorkspaceSettingStore, useMemoStore } from "@/store/v1";
-import { NodeType } from "@/types/proto/api/v1/markdown_service";
-import { MemoRelation_Type } from "@/types/proto/api/v1/memo_relation_service";
-import { Memo, Visibility } from "@/types/proto/api/v1/memo_service";
-import { WorkspaceMemoRelatedSetting } from "@/types/proto/api/v1/workspace_setting_service";
-import { WorkspaceSettingKey } from "@/types/proto/store/workspace_setting";
-import { useTranslate } from "@/utils/i18n";
-import { isSuperUser } from "@/utils/user";
-import MemoActionMenu from "./MemoActionMenu";
-import MemoContent from "./MemoContent";
-import MemoEditor from "./MemoEditor";
-import MemoLocationView from "./MemoLocationView";
-import MemoReactionistView from "./MemoReactionListView";
-import MemoRelationListView from "./MemoRelationListView";
-import MemoResourceListView from "./MemoResourceListView";
-import showPreviewImageDialog from "./PreviewImageDialog";
-import ReactionSelector from "./ReactionSelector";
-import UserAvatar from "./UserAvatar";
-import VisibilityIcon from "./VisibilityIcon";
+import useAsyncEffect from '@/hooks/useAsyncEffect';
+import useCurrentUser from '@/hooks/useCurrentUser';
+import useNavigateTo from '@/hooks/useNavigateTo';
+import {
+  useMemoStore,
+  useUserStore,
+  useWorkspaceSettingStore,
+} from '@/store/v1';
+import { NodeType } from '@/types/proto/api/v1/markdown_service';
+import { MemoRelation_Type } from '@/types/proto/api/v1/memo_relation_service';
+import { type Memo, Visibility } from '@/types/proto/api/v1/memo_service';
+import { WorkspaceMemoRelatedSetting } from '@/types/proto/api/v1/workspace_setting_service';
+import { WorkspaceSettingKey } from '@/types/proto/store/workspace_setting';
+import { useTranslate } from '@/utils/i18n';
+import { isSuperUser } from '@/utils/user';
+import { Tooltip } from '@mui/joy';
+import clsx from 'clsx';
+import { BookmarkIcon, MessageCircleMoreIcon } from 'lucide-react';
+import { memo, useCallback, useRef, useState } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import MemoActionMenu from './MemoActionMenu';
+import MemoContent from './MemoContent';
+import MemoEditor from './MemoEditor';
+import MemoLocationView from './MemoLocationView';
+import MemoReactionistView from './MemoReactionListView';
+import MemoRelationListView from './MemoRelationListView';
+import MemoResourceListView from './MemoResourceListView';
+import showPreviewImageDialog from './PreviewImageDialog';
+import ReactionSelector from './ReactionSelector';
+import UserAvatar from './UserAvatar';
+import VisibilityIcon from './VisibilityIcon';
 
 interface Props {
   memo: Memo;
-  displayTimeFormat?: "auto" | "time";
+  displayTimeFormat?: 'auto' | 'time';
   compact?: boolean;
   showCreator?: boolean;
   showVisibility?: boolean;
@@ -50,13 +54,21 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const [creator, setCreator] = useState(userStore.getUserByName(memo.creator));
   const memoContainerRef = useRef<HTMLDivElement>(null);
   const workspaceMemoRelatedSetting =
-    workspaceSettingStore.getWorkspaceSettingByKey(WorkspaceSettingKey.MEMO_RELATED).memoRelatedSetting ||
-    WorkspaceMemoRelatedSetting.fromPartial({});
-  const referencedMemos = memo.relations.filter((relation) => relation.type === MemoRelation_Type.REFERENCE);
+    workspaceSettingStore.getWorkspaceSettingByKey(
+      WorkspaceSettingKey.MEMO_RELATED
+    ).memoRelatedSetting || WorkspaceMemoRelatedSetting.fromPartial({});
+  const referencedMemos = memo.relations.filter(
+    (relation) => relation.type === MemoRelation_Type.REFERENCE
+  );
   const commentAmount = memo.relations.filter(
-    (relation) => relation.type === MemoRelation_Type.COMMENT && relation.relatedMemo?.name === memo.name,
+    (relation) =>
+      relation.type === MemoRelation_Type.COMMENT &&
+      relation.relatedMemo?.name === memo.name
   ).length;
-  const relativeTimeFormat = Date.now() - memo.displayTime!.getTime() > 1000 * 60 * 60 * 24 ? "datetime" : "auto";
+  const relativeTimeFormat =
+    Date.now() - memo.displayTime?.getTime() > 1000 * 60 * 60 * 24
+      ? 'datetime'
+      : 'auto';
   const readonly = memo.creator !== user?.name && !isSuperUser(user);
   const isInMemoDetailPage = location.pathname.startsWith(`/m/${memo.uid}`);
 
@@ -73,24 +85,27 @@ const MemoView: React.FC<Props> = (props: Props) => {
   const handleMemoContentClick = useCallback(async (e: React.MouseEvent) => {
     const targetEl = e.target as HTMLElement;
 
-    if (targetEl.tagName === "IMG") {
-      const imgUrl = targetEl.getAttribute("src");
+    if (targetEl.tagName === 'IMG') {
+      const imgUrl = targetEl.getAttribute('src');
       if (imgUrl) {
         showPreviewImageDialog([imgUrl], 0);
       }
     }
   }, []);
 
-  const handleMemoContentDoubleClick = useCallback(async (e: React.MouseEvent) => {
-    if (readonly) {
-      return;
-    }
+  const handleMemoContentDoubleClick = useCallback(
+    async (e: React.MouseEvent) => {
+      if (readonly) {
+        return;
+      }
 
-    if (workspaceMemoRelatedSetting.enableDoubleClickEdit) {
-      e.preventDefault();
-      setShowEditor(true);
-    }
-  }, []);
+      if (workspaceMemoRelatedSetting.enableDoubleClickEdit) {
+        e.preventDefault();
+        setShowEditor(true);
+      }
+    },
+    []
+  );
 
   const onPinIconClick = async () => {
     try {
@@ -100,25 +115,35 @@ const MemoView: React.FC<Props> = (props: Props) => {
             name: memo.name,
             pinned: false,
           },
-          ["pinned"],
+          ['pinned']
         );
       }
-    } catch (error) {
+    } catch (_error) {
       // do nth
     }
   };
 
   const displayTime =
-    props.displayTimeFormat === "time" ? (
+    props.displayTimeFormat === 'time' ? (
       memo.displayTime?.toLocaleTimeString()
     ) : (
-      <relative-time datetime={memo.displayTime?.toISOString()} format={relativeTimeFormat}></relative-time>
+      <relative-time
+        datetime={memo.displayTime?.toISOString()}
+        format={relativeTimeFormat}
+      />
     );
 
   const handleHiddenActions = () => {
-    const hiddenActions: ("edit" | "archive" | "delete" | "share" | "pin" | "remove_completed_task_list")[] = [];
+    const hiddenActions: (
+      | 'edit'
+      | 'archive'
+      | 'delete'
+      | 'share'
+      | 'pin'
+      | 'remove_completed_task_list'
+    )[] = [];
     if (!props.showPinned) {
-      hiddenActions.push("pin");
+      hiddenActions.push('pin');
     }
     // check if the content has done tasks
     let hasCompletedTaskList = false;
@@ -127,7 +152,10 @@ const MemoView: React.FC<Props> = (props: Props) => {
       if (hasCompletedTaskList) {
         break;
       }
-      if (newNodes[i].type === NodeType.LIST && newNodes[i].listNode?.children?.length > 0) {
+      if (
+        newNodes[i].type === NodeType.LIST &&
+        newNodes[i].listNode?.children?.length > 0
+      ) {
         for (let j = 0; j < newNodes[i].listNode.children.length; j++) {
           if (
             newNodes[i].listNode.children[j].type === NodeType.TASK_LIST_ITEM &&
@@ -140,7 +168,7 @@ const MemoView: React.FC<Props> = (props: Props) => {
       }
     }
     if (!hasCompletedTaskList) {
-      hiddenActions.push("remove_completed_task_list");
+      hiddenActions.push('remove_completed_task_list');
     }
     return hiddenActions;
   };
@@ -148,16 +176,18 @@ const MemoView: React.FC<Props> = (props: Props) => {
   return (
     <div
       className={clsx(
-        "group relative flex flex-col justify-start items-start w-full px-4 py-3 mb-2 gap-2 bg-white dark:bg-zinc-800 rounded-lg border border-white dark:border-zinc-800 hover:border-gray-200 dark:hover:border-zinc-700",
-        props.showPinned && memo.pinned && "border-gray-200 border dark:border-zinc-700",
-        className,
+        'group relative mb-2 flex w-full flex-col items-start justify-start gap-2 rounded-lg border border-white bg-white px-4 py-3 hover:border-gray-200 dark:border-zinc-800 dark:bg-zinc-800 dark:hover:border-zinc-700',
+        props.showPinned &&
+          memo.pinned &&
+          'border border-gray-200 dark:border-zinc-700',
+        className
       )}
       ref={memoContainerRef}
     >
       {showEditor ? (
         <MemoEditor
           autoFocus
-          className="border-none !p-0 -mb-2"
+          className="!p-0 -mb-2 border-none"
           cacheKey={`inline-memo-editor-${memo.name}`}
           memoName={memo.name}
           onConfirm={() => setShowEditor(false)}
@@ -165,28 +195,38 @@ const MemoView: React.FC<Props> = (props: Props) => {
         />
       ) : (
         <>
-          <div className="w-full flex flex-row justify-between items-center gap-2">
-            <div className="w-auto max-w-[calc(100%-8rem)] grow flex flex-row justify-start items-center">
+          <div className="flex w-full flex-row items-center justify-between gap-2">
+            <div className="flex w-auto max-w-[calc(100%-8rem)] grow flex-row items-center justify-start">
               {props.showCreator && creator ? (
-                <div className="w-full flex flex-row justify-start items-center">
-                  <Link className="w-auto hover:opacity-80" to={`/u/${encodeURIComponent(creator.username)}`} viewTransition>
-                    <UserAvatar className="mr-2 shrink-0" avatarUrl={creator.avatarUrl} />
+                <div className="flex w-full flex-row items-center justify-start">
+                  <Link
+                    className="w-auto hover:opacity-80"
+                    to={`/u/${encodeURIComponent(creator.username)}`}
+                    viewTransition
+                  >
+                    <UserAvatar
+                      className="mr-2 shrink-0"
+                      avatarUrl={creator.avatarUrl}
+                    />
                   </Link>
-                  <div className="w-full flex flex-col justify-center items-start">
+                  <div className="flex w-full flex-col items-start justify-center">
                     <div className="flex">
                       <Link
-                        className="w-full block leading-tight hover:opacity-80 truncate text-gray-600 dark:text-gray-400"
+                        className="block w-full truncate text-gray-600 leading-tight hover:opacity-80 dark:text-gray-400"
                         to={`/u/${encodeURIComponent(creator.username)}`}
                         viewTransition
                       >
                         {creator.nickname || creator.username}
                       </Link>
                       {memo.visibility !== Visibility.PUBLIC && (
-                        <VisibilityIcon visibility={memo.visibility} className="ml-1 w-4 h-auto text-gray-600 dark:text-gray-400" />
+                        <VisibilityIcon
+                          visibility={memo.visibility}
+                          className="ml-1 h-auto w-4 text-gray-600 dark:text-gray-400"
+                        />
                       )}
                     </div>
                     <div
-                      className="w-auto -mt-0.5 text-xs leading-tight text-gray-400 dark:text-gray-500 select-none"
+                      className="-mt-0.5 w-auto select-none text-gray-400 text-xs leading-tight dark:text-gray-500"
                       onClick={handleGotoMemoDetailPage}
                     >
                       {displayTime}
@@ -195,42 +235,65 @@ const MemoView: React.FC<Props> = (props: Props) => {
                 </div>
               ) : (
                 <div
-                  className="w-full flex text-sm leading-tight text-gray-400 dark:text-gray-500 select-none"
+                  className="flex w-full select-none text-gray-400 text-sm leading-tight dark:text-gray-500"
                   onClick={handleGotoMemoDetailPage}
                 >
                   {displayTime}
-                  {props.showVisibility && memo.visibility !== Visibility.PUBLIC && (
-                    <VisibilityIcon className="ml-2 w-3 h-auto text-gray-400 dark:text-gray-500" visibility={memo.visibility} />
-                  )}
+                  {props.showVisibility &&
+                    memo.visibility !== Visibility.PUBLIC && (
+                      <VisibilityIcon
+                        className="ml-2 h-auto w-3 text-gray-400 dark:text-gray-500"
+                        visibility={memo.visibility}
+                      />
+                    )}
                 </div>
               )}
             </div>
-            <div className="flex flex-row justify-end items-center select-none shrink-0 gap-2">
-              <div className="w-auto invisible group-hover:visible flex flex-row justify-between items-center gap-2">
-                {currentUser && <ReactionSelector className="border-none w-auto h-auto" memo={memo} />}
+            <div className="flex shrink-0 select-none flex-row items-center justify-end gap-2">
+              <div className="invisible flex w-auto flex-row items-center justify-between gap-2 group-hover:visible">
+                {currentUser && (
+                  <ReactionSelector
+                    className="h-auto w-auto border-none"
+                    memo={memo}
+                  />
+                )}
               </div>
-              {!isInMemoDetailPage && (workspaceMemoRelatedSetting.enableComment || commentAmount > 0) && (
-                <Link
-                  className={clsx(
-                    "flex flex-row justify-start items-center hover:opacity-70",
-                    commentAmount === 0 && "invisible group-hover:visible",
-                  )}
-                  to={`/m/${memo.uid}#comments`}
-                  viewTransition
-                >
-                  <MessageCircleMoreIcon className="w-4 h-4 mx-auto text-gray-500 dark:text-gray-400" />
-                  {commentAmount > 0 && <span className="text-xs text-gray-500 dark:text-gray-400">{commentAmount}</span>}
-                </Link>
-              )}
+              {!isInMemoDetailPage &&
+                (workspaceMemoRelatedSetting.enableComment ||
+                  commentAmount > 0) && (
+                  <Link
+                    className={clsx(
+                      'flex flex-row items-center justify-start hover:opacity-70',
+                      commentAmount === 0 && 'invisible group-hover:visible'
+                    )}
+                    to={`/m/${memo.uid}#comments`}
+                    viewTransition
+                  >
+                    <MessageCircleMoreIcon className="mx-auto h-4 w-4 text-gray-500 dark:text-gray-400" />
+                    {commentAmount > 0 && (
+                      <span className="text-gray-500 text-xs dark:text-gray-400">
+                        {commentAmount}
+                      </span>
+                    )}
+                  </Link>
+                )}
               {props.showPinned && memo.pinned && (
-                <Tooltip title={t("common.unpin")} placement="top">
+                <Tooltip title={t('common.unpin')} placement="top">
                   <span className="cursor-pointer">
-                    <BookmarkIcon className="w-4 h-auto text-amber-500" onClick={onPinIconClick} />
+                    <BookmarkIcon
+                      className="h-auto w-4 text-amber-500"
+                      onClick={onPinIconClick}
+                    />
                   </span>
                 </Tooltip>
               )}
               {!readonly && (
-                <MemoActionMenu className="-ml-1" memo={memo} hiddenActions={handleHiddenActions()} onEdit={() => setShowEditor(true)} />
+                <MemoActionMenu
+                  className="-ml-1"
+                  memo={memo}
+                  hiddenActions={handleHiddenActions()}
+                  onEdit={() => setShowEditor(true)}
+                />
               )}
             </div>
           </div>
@@ -241,7 +304,9 @@ const MemoView: React.FC<Props> = (props: Props) => {
             readonly={readonly}
             onClick={handleMemoContentClick}
             onDoubleClick={handleMemoContentDoubleClick}
-            compact={props.compact && workspaceMemoRelatedSetting.enableAutoCompact}
+            compact={
+              props.compact && workspaceMemoRelatedSetting.enableAutoCompact
+            }
           />
           {memo.location && <MemoLocationView location={memo.location} />}
           <MemoResourceListView resources={memo.resources} />

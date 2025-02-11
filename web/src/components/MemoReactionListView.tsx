@@ -1,12 +1,12 @@
-import { uniq } from "lodash-es";
-import { memo, useEffect, useState } from "react";
-import useCurrentUser from "@/hooks/useCurrentUser";
-import { useUserStore } from "@/store/v1";
-import { Memo } from "@/types/proto/api/v1/memo_service";
-import { Reaction } from "@/types/proto/api/v1/reaction_service";
-import { User } from "@/types/proto/api/v1/user_service";
-import ReactionSelector from "./ReactionSelector";
-import ReactionView from "./ReactionView";
+import useCurrentUser from '@/hooks/useCurrentUser';
+import { useUserStore } from '@/store/v1';
+import type { Memo } from '@/types/proto/api/v1/memo_service';
+import type { Reaction } from '@/types/proto/api/v1/reaction_service';
+import type { User } from '@/types/proto/api/v1/user_service';
+import { uniq } from 'lodash-es';
+import { memo, useEffect, useState } from 'react';
+import ReactionSelector from './ReactionSelector';
+import ReactionView from './ReactionView';
 
 interface Props {
   memo: Memo;
@@ -17,7 +17,9 @@ const MemoReactionListView = (props: Props) => {
   const { memo, reactions } = props;
   const currentUser = useCurrentUser();
   const userStore = useUserStore();
-  const [reactionGroup, setReactionGroup] = useState<Map<string, User[]>>(new Map());
+  const [reactionGroup, setReactionGroup] = useState<Map<string, User[]>>(
+    new Map()
+  );
 
   useEffect(() => {
     (async () => {
@@ -34,9 +36,16 @@ const MemoReactionListView = (props: Props) => {
 
   return (
     reactions.length > 0 && (
-      <div className="w-full flex flex-row justify-start items-start flex-wrap gap-1 select-none">
+      <div className="flex w-full select-none flex-row flex-wrap items-start justify-start gap-1">
         {Array.from(reactionGroup).map(([reactionType, users]) => {
-          return <ReactionView key={`${reactionType.toString()} ${users.length}`} memo={memo} reactionType={reactionType} users={users} />;
+          return (
+            <ReactionView
+              key={`${reactionType.toString()} ${users.length}`}
+              memo={memo}
+              reactionType={reactionType}
+              users={users}
+            />
+          );
         })}
         {currentUser && <ReactionSelector memo={memo} />}
       </div>
