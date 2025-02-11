@@ -59,14 +59,6 @@ jobs:
           labels: |
             org.opencontainers.image.version=${{ env.VERSION }}
 
-      - name: Use Latest Corepack
-        run: |
-          echo "Before: corepack version => $(corepack --version || echo 'not installed')"
-          npm install -g corepack@latest
-          echo "After : corepack version => $(corepack --version)"
-          corepack enable
-          pnpm --version
-
       - name: Build and Push
         id: docker_build
         uses: docker/build-push-action@v6
