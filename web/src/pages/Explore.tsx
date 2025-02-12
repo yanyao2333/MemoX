@@ -60,7 +60,7 @@ const Explore = () => {
 					"flex w-full flex-row items-start justify-start gap-4 px-4 sm:px-6",
 				)}
 			>
-				<div className={clsx(md ? "w-[calc(100%-15rem)]" : "w-full")}>
+				<div className={clsx(md && user ? "w-[calc(100%-15rem)]" : "w-full")}>
 					<MemoFilters />
 					<div className="flex w-full max-w-full flex-col items-start justify-start">
 						<PagedMemoList
