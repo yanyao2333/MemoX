@@ -3,6 +3,7 @@ import { Option, Select } from "@mui/joy";
 import clsx from "clsx";
 import { Settings2Icon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/Popover";
+import { Checkbox } from "@mui/joy";
 
 interface Props {
 	className?: string;
@@ -33,18 +34,6 @@ const MemoDisplaySettingMenu = ({ className }: Props) => {
 						</Select>
 					</div>
 					<div className="flex w-full flex-row items-center justify-between">
-						<span className="mr-3 shrink-0 text-sm">Include Comments</span>
-						<Select
-							value={memoFilterStore.includeComments}
-							onChange={(_, value) =>
-								memoFilterStore.setIncludeComments(Boolean(value))
-							}
-						>
-							<Option value={true}>Yes</Option>
-							<Option value={false}>No</Option>
-						</Select>
-					</div>
-					<div className="flex w-full flex-row items-center justify-between">
 						<span className="mr-3 shrink-0 text-sm">Direction</span>
 						<Select
 							value={memoFilterStore.orderByTimeAsc}
@@ -55,6 +44,17 @@ const MemoDisplaySettingMenu = ({ className }: Props) => {
 							<Option value={false}>DESC</Option>
 							<Option value={true}>ASC</Option>
 						</Select>
+					</div>
+					<div className="flex w-full flex-row items-center justify-between">
+						<Checkbox
+							variant="soft"
+							size="sm"
+							label={"Include Comments"}
+							checked={memoFilterStore.includeComments}
+							onChange={(e) =>
+								memoFilterStore.setIncludeComments(e.target.checked)
+							}
+						/>
 					</div>
 				</div>
 			</PopoverContent>
