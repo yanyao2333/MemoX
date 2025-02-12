@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/usememos/memos/internal/util"
 
@@ -142,4 +143,62 @@ func (s *Store) UpdateMemo(ctx context.Context, update *UpdateMemo) error {
 
 func (s *Store) DeleteMemo(ctx context.Context, delete *DeleteMemo) error {
 	return s.driver.DeleteMemo(ctx, delete)
+}
+
+// GetMemosFromPastMonths gets memos from the same day of past n months.
+// If n is 0 or negative, it gets memos from all past months.
+func (s *Store) GetMemosFromPastMonths(ctx context.Context, creatorID int32, n int) ([]*Memo, error) {
+	now := time.Now()
+	currentYear, currentMonth, currentDay := now.Date()
+	var allMemos []*Memo
+
+	generateDates := func() []time.Time {
+		var dates []time.Time
+		year := currentYear
+		month := currentMonth
+		for i := 0; ; i++ {
+			if n > 0 && i >= n {
+				break
+			}
+			targetDate := time.Date(year, month, currentDay, 0, 0, 0, 0, now.Location())
+
+			// Handle cases where the target date is invalid (e.g., Feb 30th).
+			if targetDate.Month() != month {
+				continue
+			}
+
+			dates = append(dates, targetDate)
+
+			month--
+			if month == 0 {
+				month = 12
+				year--
+			}
+			if n <= 0 && year < currentYear-100 { //最多回溯100年，防止无限循环
+				break
+			}
+		}
+		return dates
+	}
+	dates := generateDates()
+
+	// Query memos for each date
+	for _, date := range dates {
+		startOfDay := date.Unix()
+		endOfDay := date.AddDate(0, 0, 1).Unix() - 1 // End of the day
+
+		find := &FindMemo{
+			CreatorID:       &creatorID,
+			CreatedTsAfter:  &startOfDay,
+			CreatedTsBefore: &endOfDay,
+		}
+
+		memos, err := s.ListMemos(ctx, find)
+		if err != nil {
+			return nil, err
+		}
+		allMemos = append(allMemos, memos...)
+	}
+
+	return allMemos, nil
 }

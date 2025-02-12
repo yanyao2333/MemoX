@@ -703,3 +703,28 @@ func substring(s string, length int) string {
 
 	return s[:byteIndex]
 }
+
+func (s *APIV1Service) GetMemosFromPastMonths(ctx context.Context, request *v1pb.GetMemosFromPastMonthsRequest) (*v1pb.GetMemosFromPastMonthsResponse, error) {
+	creatorID, err := ExtractUserIDFromName(request.Creator)
+	if err != nil {
+		return nil, status.Errorf(codes.InvalidArgument, "invalid creator name: %v", err)
+	}
+
+	memos, err := s.Store.GetMemosFromPastMonths(ctx, creatorID, int(request.Months))
+	if err != nil {
+		return nil, status.Errorf(codes.Internal, "failed to get memos from past months: %v", err)
+	}
+
+	memoMessages := []*v1pb.Memo{}
+	for _, memo := range memos {
+		memoMessage, err := s.convertMemoFromStore(ctx, memo, v1pb.MemoView_MEMO_VIEW_FULL)
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to convert memo")
+		}
+		memoMessages = append(memoMessages, memoMessage)
+	}
+
+	return &v1pb.GetMemosFromPastMonthsResponse{
+		Memos: memoMessages,
+	}, nil
+}

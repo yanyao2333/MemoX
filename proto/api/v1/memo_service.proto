@@ -119,6 +119,10 @@ service MemoService {
     option (google.api.http) = {delete: "/api/v1/reactions/{reaction_id}"};
     option (google.api.method_signature) = "reaction_id";
   }
+  // 「那月今日」功能 api
+  rpc GetMemosFromPastMonths(GetMemosFromPastMonthsRequest) returns (GetMemosFromPastMonthsResponse) {
+    option (google.api.http) = {get: "/api/v1/memos/past-months"};
+  }
 }
 
 enum Visibility {
@@ -350,4 +354,16 @@ message UpsertMemoReactionRequest {
 
 message DeleteMemoReactionRequest {
   int32 reaction_id = 1;
+}
+
+message GetMemosFromPastMonthsRequest {
+  // The creator ID to filter by.  Format: users/{id}
+  string creator = 1 [(google.api.field_behavior) = REQUIRED];
+
+  // The number of past months to retrieve.  If 0 or negative, retrieve all.
+  int32 months = 2;
+}
+
+message GetMemosFromPastMonthsResponse {
+  repeated Memo memos = 1;
 }

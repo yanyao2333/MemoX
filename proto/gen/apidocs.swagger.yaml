@@ -360,6 +360,33 @@ paths:
             $ref: '#/definitions/v1CreateMemoRequest'
       tags:
         - MemoService
+  /api/v1/memos/past-months:
+    get:
+      summary: 「那月今日」功能 api
+      operationId: MemoService_GetMemosFromPastMonths
+      responses:
+        "200":
+          description: A successful response.
+          schema:
+            $ref: '#/definitions/v1GetMemosFromPastMonthsResponse'
+        default:
+          description: An unexpected error response.
+          schema:
+            $ref: '#/definitions/googlerpcStatus'
+      parameters:
+        - name: creator
+          description: 'The creator ID to filter by.  Format: users/{id}'
+          in: query
+          required: true
+          type: string
+        - name: months
+          description: The number of past months to retrieve.  If 0 or negative, retrieve all.
+          in: query
+          required: false
+          type: integer
+          format: int32
+      tags:
+        - MemoService
   /api/v1/memos:by-uid/{uid}:
     get:
       summary: GetMemoByUid gets a memo by uid
@@ -2441,6 +2468,14 @@ definitions:
     properties:
       symbol:
         type: string
+  v1GetMemosFromPastMonthsResponse:
+    type: object
+    properties:
+      memos:
+        type: array
+        items:
+          type: object
+          $ref: '#/definitions/apiv1Memo'
   v1HTMLElementNode:
     type: object
     properties:
