@@ -76,7 +76,8 @@
 		"username": "Username",
 		"version": "Version",
 		"visibility": "Visibility",
-		"yourself": "Yourself"
+		"yourself": "Yourself",
+		"past-months": "Past Months"
 	},
 	"days": {
 		"fri": "Fri",

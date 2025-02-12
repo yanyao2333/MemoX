@@ -374,11 +374,6 @@ paths:
           schema:
             $ref: '#/definitions/googlerpcStatus'
       parameters:
-        - name: creator
-          description: 'The creator ID to filter by.  Format: users/{id}'
-          in: query
-          required: true
-          type: string
         - name: months
           description: The number of past months to retrieve.  If 0 or negative, retrieve all.
           in: query

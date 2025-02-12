@@ -705,12 +705,12 @@ func substring(s string, length int) string {
 }
 
 func (s *APIV1Service) GetMemosFromPastMonths(ctx context.Context, request *v1pb.GetMemosFromPastMonthsRequest) (*v1pb.GetMemosFromPastMonthsResponse, error) {
-	creatorID, err := ExtractUserIDFromName(request.Creator)
+	user, err := s.GetCurrentUser(ctx)
 	if err != nil {
-		return nil, status.Errorf(codes.InvalidArgument, "invalid creator name: %v", err)
+		return nil, status.Errorf(codes.Internal, "failed to get user")
 	}
 
-	memos, err := s.Store.GetMemosFromPastMonths(ctx, creatorID, int(request.Months))
+	memos, err := s.Store.GetMemosFromPastMonths(ctx, user.ID, int(request.Months))
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to get memos from past months: %v", err)
 	}

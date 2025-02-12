@@ -357,11 +357,8 @@ message DeleteMemoReactionRequest {
 }
 
 message GetMemosFromPastMonthsRequest {
-  // The creator ID to filter by.  Format: users/{id}
-  string creator = 1 [(google.api.field_behavior) = REQUIRED];
-
   // The number of past months to retrieve.  If 0 or negative, retrieve all.
-  int32 months = 2;
+  int32 months = 1;
 }
 
 message GetMemosFromPastMonthsResponse {

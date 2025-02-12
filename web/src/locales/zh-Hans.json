@@ -76,7 +76,8 @@
 		"username": "用户名",
 		"version": "版本",
 		"visibility": "可见性",
-		"yourself": "您自己"
+		"yourself": "您自己",
+		"past-months": "那年今日"
 	},
 	"days": {
 		"fri": "五",
