@@ -7,6 +7,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	"github.com/google/uuid"
@@ -16,6 +17,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/soheilhy/cmux"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 
 	storepb "github.com/usememos/memos/proto/gen/store"
 	"github.com/usememos/memos/server/profile"
@@ -35,6 +38,11 @@ type Server struct {
 
 	echoServer *echo.Echo
 	grpcServer *grpc.Server
+}
+
+func customRecoveryHandler(p interface{}) error {
+	stack := debug.Stack()
+	return status.Errorf(codes.Internal, "panic triggered: %v\nstack trace:\n%s", p, stack)
 }
 
 func NewServer(ctx context.Context, profile *profile.Profile, store *store.Store) (*Server, error) {
@@ -74,12 +82,17 @@ func NewServer(ctx context.Context, profile *profile.Profile, store *store.Store
 	// Create and register RSS routes.
 	rss.NewRSSService(s.Profile, s.Store).RegisterRoutes(rootGroup)
 
+	// Create recovery options for gRPC server.
+	recoveryOpts := []grpcrecovery.Option{
+		grpcrecovery.WithRecoveryHandler(customRecoveryHandler),
+	}
+
 	grpcServer := grpc.NewServer(
 		// Override the maximum receiving message size to math.MaxInt32 for uploading large resources.
 		grpc.MaxRecvMsgSize(math.MaxInt32),
 		grpc.ChainUnaryInterceptor(
 			apiv1.NewLoggerInterceptor().LoggerInterceptor,
-			grpcrecovery.UnaryServerInterceptor(),
+			grpcrecovery.UnaryServerInterceptor(recoveryOpts...),
 			apiv1.NewGRPCAuthInterceptor(store, secret).AuthenticationInterceptor,
 		))
 	s.grpcServer = grpcServer
