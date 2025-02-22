@@ -8,9 +8,12 @@ import (
 	"google.golang.org/grpc/status"
 	"google.golang.org/protobuf/types/known/emptypb"
 
+	"github.com/pkg/errors"
 	v1pb "github.com/usememos/memos/proto/gen/api/v1"
 	"github.com/usememos/memos/store"
 )
+
+var UserNotFoundError = errors.New("resource not found")
 
 func (s *APIV1Service) ListMemoReactions(ctx context.Context, request *v1pb.ListMemoReactionsRequest) (*v1pb.ListMemoReactionsResponse, error) {
 	reactions, err := s.Store.ListReactions(ctx, &store.FindReaction{
@@ -26,6 +29,9 @@ func (s *APIV1Service) ListMemoReactions(ctx context.Context, request *v1pb.List
 	for _, reaction := range reactions {
 		reactionMessage, err := s.convertReactionFromStore(ctx, reaction)
 		if err != nil {
+			if errors.Is(err, UserNotFoundError) {
+				continue
+			}
 			return nil, status.Errorf(codes.Internal, "failed to convert reaction")
 		}
 		response.Reactions = append(response.Reactions, reactionMessage)
@@ -70,6 +76,10 @@ func (s *APIV1Service) convertReactionFromStore(ctx context.Context, reaction *s
 	})
 	if err != nil {
 		return nil, err
+	}
+	// 用户可能会被删除，但它创建的 reaction 并不会被同步清除，导致会有获取不到 user 的情况，所以这里要判断一下
+	if creator == nil {
+		return nil, UserNotFoundError
 	}
 	return &v1pb.Reaction{
 		Id:           reaction.ID,
