@@ -141,7 +141,8 @@
 		"update-succeed": "更新成功",
 		"user-not-found": "未找到该用户",
 		"remove-completed-task-list-items-successfully": "移除成功！",
-		"try-enable-include-comments-tip": "试试启用 IncludeComments 筛选项？"
+    "try-enable-include-comments-tip": "试试启用 IncludeComments 筛选项？",
+    "unlimited-memos-tip": "登录后查看全部内容"
 	},
 	"reference": {
 		"add-references": "添加引用",

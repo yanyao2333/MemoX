@@ -103,6 +103,7 @@ const Home = () => {
 									.sort((a, b) => Number(b.pinned) - Number(a.pinned))
 							}
 							filter={memoListFilter}
+							currentUser={user}
 						/>
 					</div>
 				</div>

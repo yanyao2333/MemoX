@@ -141,7 +141,8 @@
 		"update-succeed": "Update succeeded",
 		"user-not-found": "User not found",
 		"remove-completed-task-list-items-successfully": "The removal was successful",
-		"try-enable-include-comments-tip": "You can try to enable IncludeComments filter and re-search."
+		"try-enable-include-comments-tip": "You can try to enable IncludeComments filter and re-search.",
+		"unlimited-memos-tip": "Log in to view all content"
 	},
 	"reference": {
 		"add-references": "Add references",

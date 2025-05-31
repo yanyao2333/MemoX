@@ -95,6 +95,11 @@ func (s *APIV1Service) CreateMemo(ctx context.Context, request *v1pb.CreateMemoR
 }
 
 func (s *APIV1Service) ListMemos(ctx context.Context, request *v1pb.ListMemosRequest) (*v1pb.ListMemosResponse, error) {
+	user, err := s.GetCurrentUser(ctx)
+	if err != nil {
+		user = nil
+	}
+
 	memoFind := &store.FindMemo{
 		// Exclude comments by default.
 		ExcludeComments: true,
@@ -104,18 +109,24 @@ func (s *APIV1Service) ListMemos(ctx context.Context, request *v1pb.ListMemosReq
 	}
 
 	var limit, offset int
-	if request.PageToken != "" {
-		var pageToken v1pb.PageToken
-		if err := unmarshalPageToken(request.PageToken, &pageToken); err != nil {
-			return nil, status.Errorf(codes.InvalidArgument, "invalid page token: %v", err)
-		}
-		limit = int(pageToken.Limit)
-		offset = int(pageToken.Offset)
+	if user == nil {
+		// 未登录用户只返回前20条
+		limit = 20
+		offset = 0
 	} else {
-		limit = int(request.PageSize)
-	}
-	if limit <= 0 {
-		limit = DefaultPageSize
+		if request.PageToken != "" {
+			var pageToken v1pb.PageToken
+			if err := unmarshalPageToken(request.PageToken, &pageToken); err != nil {
+				return nil, status.Errorf(codes.InvalidArgument, "invalid page token: %v", err)
+			}
+			limit = int(pageToken.Limit)
+			offset = int(pageToken.Offset)
+		} else {
+			limit = int(request.PageSize)
+		}
+		if limit <= 0 {
+			limit = DefaultPageSize
+		}
 	}
 	limitPlusOne := limit + 1
 	memoFind.Limit = &limitPlusOne

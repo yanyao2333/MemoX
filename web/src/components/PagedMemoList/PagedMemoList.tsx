@@ -2,6 +2,7 @@ import { DEFAULT_LIST_MEMOS_PAGE_SIZE } from "@/helpers/consts";
 import useResponsiveWidth from "@/hooks/useResponsiveWidth";
 import { useMemoFilterStore, useMemoList, useMemoStore } from "@/store/v1";
 import type { Memo } from "@/types/proto/api/v1/memo_service";
+import type { User } from "@/types/proto/api/v1/user_service";
 import { useTranslate } from "@/utils/i18n";
 import { Button } from "@usememos/mui";
 import { ArrowDownIcon, LoaderIcon } from "lucide-react";
@@ -14,6 +15,7 @@ interface Props {
 	listSort?: (list: Memo[]) => Memo[];
 	filter?: string;
 	pageSize?: number;
+	currentUser?: User;
 }
 
 interface State {
@@ -61,6 +63,13 @@ const PagedMemoList = (props: Props) => {
 	const children = (
 		<>
 			{sortedMemoList.map((memo) => props.renderer(memo))}
+			{!props.currentUser && sortedMemoList.length >= 20 && (
+				<div className="mt-4 mb-8 flex w-full flex-col items-center justify-center italic">
+					<p className="text-gray-600 dark:text-gray-400">
+						{t("message.unlimited-memos-tip")}
+					</p>
+				</div>
+			)}
 			{state.isRequesting && (
 				<div className="my-4 flex w-full flex-row items-center justify-center">
 					<LoaderIcon className="animate-spin text-zinc-500" />
