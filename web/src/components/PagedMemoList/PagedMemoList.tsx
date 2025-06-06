@@ -70,12 +70,12 @@ const PagedMemoList = (props: Props) => {
 					</p>
 				</div>
 			)}
-			{state.isRequesting && (
+			{!(!props.currentUser && sortedMemoList.length >= 20) && state.isRequesting && (
 				<div className="my-4 flex w-full flex-row items-center justify-center">
 					<LoaderIcon className="animate-spin text-zinc-500" />
 				</div>
 			)}
-			{!state.isRequesting && state.nextPageToken && (
+			{!(!props.currentUser && sortedMemoList.length >= 20) && !state.isRequesting && state.nextPageToken && (
 				<div className="my-4 flex w-full flex-row items-center justify-center">
 					<Button
 						variant="plain"
